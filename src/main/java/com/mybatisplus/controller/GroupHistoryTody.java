@@ -47,7 +47,7 @@ public class GroupHistoryTody {
 
 
         final MiraiMessageContent messageContent = builder.build();
-
+        sender.SENDER.sendGroupMsg(msg, "您好 这是历史上的今天");
         // 发送消息
         sender.SENDER.sendGroupMsg(msg, messageContent);
 
