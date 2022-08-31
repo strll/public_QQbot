@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatisplus.mapper.MessageMapper">
+    <insert id="InsertStudy" >
+        insert into message  (keymessage,valuemessage,qq)
+         values
+                ( #{message.keymessage},#{message.valuemessage},#{message.qq});
+    </insert>
+    <delete id="Deletemessagenull">
+        delete from message where valuemessage is null;
+    </delete>
+    <delete id="deletemessage">
+        delete from message where keymessage=#{message};
+    </delete>
+    <delete id="DeleteMessage_By_QQ">
+        delete from message where keymessage=#{key} and qq=#{qq};
+    </delete>
+
+    <select id="selectall" resultType="com.mybatisplus.entity.Message">
+        select * from message;
+    </select>
+    <select id="selectUseId" resultType="com.mybatisplus.entity.Message">
+        select * from message where id=#{message.id};
+    </select>
+    <select id="getKeyByMessage" resultType="com.mybatisplus.entity.Message">
+        select * from message where valuemessage=#{message.valuemessage};
+    </select>
+    <select id="getKeyByUrl" resultType="com.mybatisplus.entity.Message">
+        select * from message where url=#{message};
+
+    </select>
+    <select id="getQqByKeymessage" resultType="java.lang.String">
+        select qq from  message where keymessage=#{Keymessage};
+    </select>
+    <select id="Get_Message_by_QQ_And_key" resultType="com.mybatisplus.entity.Message">
+        select * from message where qq=#{qq} and keymessage=#{key};
+    </select>
+
+
+</mapper>
