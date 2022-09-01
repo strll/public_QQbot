@@ -18,11 +18,13 @@ public class GruopFriendChangeEvent {
         String accountCode = groupMemberIncrease.getBeOperatorInfo().getAccountCode();
         sender.SENDER.sendGroupMsg(groupMemberIncrease, "欢迎进群:"+"[CAT:at,code="+accountCode+"]"+"("+accountCode+")"+"\n 我是本群机器人nana 输入nana帮助可以看到我的功能");
            }
-    @OnGroupMemberReduce
+
+   // @OnGroupMemberReduce
     public void groupFriendReduceEvent(GroupMemberReduce roupMemberReduce , MsgSender sender){
 
         String accountNickname = roupMemberReduce.getBeOperatorInfo().getAccountNickname();
         String accountCode = roupMemberReduce.getBeOperatorInfo().getAccountCode();
-        sender.SENDER.sendGroupMsg(roupMemberReduce,"emmm.. \n"+accountNickname+"(QQ号是"+ accountCode+")"+"离开了我们 \n nana不知道发什么什么但是还是希望大家都能够好好相处");
+        sender.SENDER.sendGroupMsg(roupMemberReduce,"emmm.. \n"+accountNickname+"(QQ号是"+ accountCode+")"+"离开了我们 \n ");
     }
+
 }

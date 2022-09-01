@@ -16,6 +16,7 @@ import love.forte.simbot.listener.SessionCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -29,14 +30,9 @@ public class GroupStudySessionAreaEvent {
 
     @Autowired
     private IMessageService service;
-
     Message message = null;
-
-
-
+    HashMap<String,Message> hashMap=new HashMap<String,Message>();
     private volatile boolean Study_flag=true; //学习模块启动标志
-
-
     @Autowired
     private IAdminService adminService;
 
@@ -79,11 +75,11 @@ public class GroupStudySessionAreaEvent {
         if(  Study_flag ) {
             ContinuousSessionScopeContext sessionContext = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
             assert sessionContext != null;
-
             String accountCode = msg.getAccountInfo().getAccountCode();
             String groupCode = msg.getGroupInfo().getGroupCode();
             // 通过账号拼接一个此人在此群中的唯一key
-            String key = accountCode + "-" + groupCode;
+            String key = accountCode + "-" + groupCode+"study";
+
             // 发送提示信息
             sender.sendGroupMsg(msg, "请问您要触发的关键词是什么?");
             SessionCallback<String> callback = SessionCallback.<String>builder().onResume(text -> {
@@ -131,14 +127,14 @@ public class GroupStudySessionAreaEvent {
         // 得到session上下文。
         ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
-
         String accountCode = msg.getAccountInfo().getAccountCode();
         String groupCode = msg.getGroupInfo().getGroupCode();
         // 通过账号拼接一个此人在此群中的唯一key
-        String key = accountCode + "-" + groupCode;
+        String key = accountCode + "-" + groupCode+"study";
         String text = msg.getText();
         message = new  Message();
         message.setKeymessage(text);
+        hashMap.put(key,message);
         session.push(AREA1_GROUP, key, text);
 
     }
@@ -153,43 +149,41 @@ public class GroupStudySessionAreaEvent {
         // 得到session上下文。
         ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
-
         String accountCode = msg.getAccountInfo().getAccountCode();
         String groupCode = msg.getGroupInfo().getGroupCode();
         // 通过账号拼接一个此人在此群中的唯一key
-        String key = accountCode + "-" + groupCode;
-
+        String key = accountCode + "-" + groupCode+"study";
+        Message messageget = hashMap.get(key);
+        if (messageget!=null){
         String text = msg.getText();
-
         MessageContent msgContent = msg.getMsgContent();
         List<Neko> image = msgContent.getCats("image");
         String url="";
         if(image.size()!=0){
             Neko neko = image.get(0);
             url = neko.get("url");
-            message.setUrl(url);
+            messageget.setUrl(url);
         }
-
         if(url.equals("")){
             try{
                 String value = text;
-
-                message.setValuemessage(value);
-
+                messageget.setValuemessage(value);
             }catch(ArrayIndexOutOfBoundsException e){
-                if(message.getValuemessage().equals("")&&message.getUrl().equals("")){
+                if(messageget.getValuemessage().equals("")&& messageget.getUrl().equals("")){
                     session.push(AREA2_GROUP, key, "0");
-
-                    message=null;
+                    messageget =null;
                 }
             }
         }
-        message.setValuemessage(text);
-        message.setQq(accountCode);
-        int study = service.InsertMessage(message);
+        assert messageget != null;
+        assert !messageget.getKeymessage().equals("");
+       messageget.setValuemessage(text);
+        messageget.setQq(accountCode);
+        assert !messageget.getValuemessage().equals("");
+        int study = service.InsertMessage(messageget);
         session.push(AREA2_GROUP, key, study);
-        message=null;
-
+        hashMap.remove(key);
+        }
     }
 
     /**
@@ -202,17 +196,12 @@ public class GroupStudySessionAreaEvent {
         // 得到session上下文。
         ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
-
         String accountCode = msg.getAccountInfo().getAccountCode();
         String groupCode = msg.getGroupInfo().getGroupCode();
         // 通过账号拼接一个此人在此群中的唯一key
-        String key = accountCode + "-" + groupCode;
-
+        String key = accountCode + "-" + groupCode+"study";
         String text = msg.getText();
-
         session.push(AREA3_GROUP, key, text);
-
-
     }
 
     /**
@@ -229,7 +218,7 @@ public class GroupStudySessionAreaEvent {
         String accountCode = msg.getAccountInfo().getAccountCode();
         String groupCode = msg.getGroupInfo().getGroupCode();
         // 通过账号拼接一个此人在此群中的唯一key
-        String key = accountCode + "-" + groupCode;
+        String key = accountCode + "-" + groupCode+"study";
 
         String text = msg.getText();
 

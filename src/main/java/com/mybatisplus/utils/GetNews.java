@@ -30,7 +30,7 @@ public class GetNews {
         for (Element element : allElements) {
             if("img".equals(element.tagName())){
                 String url = element.attr("src");
-                result.append("[CAT:image,file=").append(url).append("]\n");
+  //             result.append("[CAT:image,file=").append(url).append("]\n");
             }else if("p".equals(element.tagName())) {
                 String content = element.text().trim();
                 result.append(content).append("\n");

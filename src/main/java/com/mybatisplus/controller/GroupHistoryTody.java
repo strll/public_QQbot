@@ -7,6 +7,7 @@ import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.MessageContentBuilderFactory;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.MsgSender;
+import love.forte.simbot.api.sender.Sender;
 import love.forte.simbot.component.mirai.message.MiraiMessageContent;
 import love.forte.simbot.component.mirai.message.MiraiMessageContentBuilder;
 import love.forte.simbot.component.mirai.message.MiraiMessageContentBuilderFactory;
@@ -28,28 +29,27 @@ public class GroupHistoryTody {
     @OnGroup
     @Filter(value="nana历史上的今天",trim=true,matchType = MatchType.CONTAINS)
     @Async
-    public void sendNews(GroupMsg msg, MsgSender sender) throws IOException {
+    public void sendNews(GroupMsg msg, Sender sender) throws IOException {
         MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
         String historytody = historyTody.historytody();
         String finalS = historytody;
-        String replace = finalS.replaceAll("\\\\", "").replaceAll(",", "").replace("[", "").replace("]", "").replaceAll("\"","");
-
-        String[] split = replace.split("n");
-        StringBuilder sbuilder = new StringBuilder();
+        String replace = finalS.replaceAll("\\\\", "").replaceAll(",", "\n").replace("[", "").replace("]", "").replaceAll("\"","");
 
         GroupMsg finalGroup =  msg;
         builder.forwardMessage(forwardBuilder -> {
+            String[] split = replace.split("\n");
             for (String s : split) {
-                sbuilder.append(s).append("\n");
+                forwardBuilder.add(finalGroup.getBotInfo(), s);
             }
+
 
         });
 
 
         final MiraiMessageContent messageContent = builder.build();
-        sender.SENDER.sendGroupMsg(msg, "您好 这是历史上的今天");
+        sender.sendGroupMsg(msg, "您好 这是历史上的今天");
         // 发送消息
-        sender.SENDER.sendGroupMsg(msg, messageContent);
+        sender.sendGroupMsg(msg, messageContent);
 
 
     }

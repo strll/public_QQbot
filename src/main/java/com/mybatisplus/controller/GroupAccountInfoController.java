@@ -374,15 +374,30 @@ private Random_say random_say;
                 GroupMsg group = group_and_sender.getGroup();
                 Sender sender = group_and_sender.getSender();
 
-                String finalS = s;
-                GroupMsg finalGroup = group;
-                builder.forwardMessage(forwardBuilder -> {
-                    forwardBuilder.add(finalGroup.getBotInfo(), finalS);
-                });
-                final MiraiMessageContent messageContent = builder.build();
+
+//                String finalS = s;
+//                GroupMsg finalGroup = group;
+//                builder.forwardMessage(forwardBuilder -> {
+//                    forwardBuilder.add(finalGroup.getBotInfo(), finalS);
+//                });
+//                final MiraiMessageContent messageContent = builder.build();
                 sender.sendGroupMsg(group, "早上好 这是今天的每日新闻 本新闻来源于知乎");
                 // 发送消息
-                sender.sendGroupMsg(group, messageContent);
+            //    sender.sendGroupMsg(group, messageContent);
+
+                String historytody = historyTody.historytody();
+                String finalS = historytody;
+                String replace = finalS.replaceAll("\\\\", "").replaceAll(",", "\n").replace("[", "").replace("]", "").replaceAll("\"","");
+
+                GroupMsg finalGroup =  group_and_sender.getGroup();
+                builder.forwardMessage(forwardBuilder -> {
+                    String[] split = replace.split("\n");
+                    for (String s1 : split) {
+                        forwardBuilder.add(finalGroup.getBotInfo(), s1);
+                    }
+
+
+                });
             }
         }
     }

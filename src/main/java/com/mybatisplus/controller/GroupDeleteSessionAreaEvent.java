@@ -16,6 +16,7 @@ import love.forte.simbot.listener.SessionCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -31,12 +32,9 @@ public class GroupDeleteSessionAreaEvent {
     private IMessageService service;
 
     Message message = null;
-
-
+    HashMap<String, Message> hashMap=new HashMap<>();
 
     private volatile boolean Delete_flag=true; //删除模块启动标志
-
-
     @Autowired
     private IAdminService adminService;
 
@@ -87,6 +85,7 @@ public class GroupDeleteSessionAreaEvent {
             String groupCode = msg.getGroupInfo().getGroupCode();
             // 通过账号拼接一个此人在此群中的唯一key
             String key = accountCode + "-" + groupCode;
+            hashMap.put(key,new Message());
 
             // 发送提示信息
             sender.sendGroupMsg(msg, "请问您要删除的关键词是什么?");
@@ -136,9 +135,13 @@ public class GroupDeleteSessionAreaEvent {
         // 通过账号拼接一个此人在此群中的唯一key
         String key = accountCode + "-" + groupCode;
 
+
         String text = msg.getText();
-        message = new  Message();
-        message.setKeymessage(text);
+
+        Message message1 = hashMap.get(key);
+        if(message1!=null){
+       // message1 = new  Message();
+        message1.setKeymessage(text);
 
         List<String> strings = service.Get_QQ_by_key(text); //根据要删除的内容返回这个key所有的qq号
 
@@ -147,17 +150,12 @@ public class GroupDeleteSessionAreaEvent {
             for (String string : strings) {
                 //如果这个qq号和触发这个函数的QQ号相同并且权限满足
                 if (string.contains(accountCode) || Integer.parseInt(adminService.get_Admin_permission(accountCode).getPermission()) < 2) {
-                    //得到这个qq号所写的这个key的所有message
-                    //      List<Message> messages = service.Get_Message_by_QQ_And_key(accountCode, text);
-                    int i = 0;
-             //       if (Integer.parseInt(adminService.get_Admin_permission(accountCode).getPermission()) < 2) {
-               //         i = service.DeleteMessage(text);
-                //    } else {
-                        i = service.DeleteMessage_By_QQ(text, accountCode);
-                  //  }
+                      int i = 0;
+                      int b = 0;
+                    i = service.DeleteMessage(text);
 
-
-                    if (i == 0) {
+                    b = service.DeleteMessage_By_QQ(text, accountCode);
+                    if (b+i == 0) {
                         session.push(AREA1_GROUP, key, "删除失败");
 
 
@@ -169,12 +167,13 @@ public class GroupDeleteSessionAreaEvent {
                     session.push(AREA1_GROUP, key, "您的权限不足 只能管理员或者本人才能删除");
                 }
             }
+            hashMap.remove(key);
         }else{
             session.push(AREA1_GROUP, key, "在数据库中未检索到删除的key");
-
+            hashMap.remove(key);
         }
     }
-
+    }
     /**
      * 针对上述第二个会话的监听。
      * 通过 @OnlySession来限制，当且仅当由 AREA2_GROUP 这个组的会话的时候，此监听函数才会生效。

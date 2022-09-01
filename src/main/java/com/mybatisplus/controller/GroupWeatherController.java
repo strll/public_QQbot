@@ -5,6 +5,7 @@ import com.mybatisplus.entity.Message;
 import com.mybatisplus.service.GetWeatherService;
 import com.mybatisplus.service.IAdminService;
 import com.mybatisplus.service.IMessageService;
+import com.mybatisplus.utils.GetNowWeather;
 import com.mybatisplus.utils.GetWeather;
 import love.forte.simbot.annotation.*;
 import love.forte.simbot.api.message.MessageContent;
@@ -22,6 +23,7 @@ import love.forte.simbot.listener.SessionCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +34,8 @@ import java.util.concurrent.TimeoutException;
 public class GroupWeatherController {
     private static final String AREA1_GROUP = "WeatherArea1";
     Message message = null;
-
+    @Autowired
+    private GetNowWeather getNowWeather;
 @Autowired
 private GetWeatherService getWeatherService;
 
@@ -80,7 +83,7 @@ private GetWeatherService getWeatherService;
     @OnGroup
     @Filter(value = "nana天气", matchType = MatchType.STARTS_WITH)
     @ListenBreak
-    public void testConversationDomain(GroupMsg msg, ListenerContext context, Sender sender) {
+    public void testConversationDomain(GroupMsg msg, ListenerContext context, Sender sender) throws Exception{
 
 
         if(  Weather_flag ) {
@@ -97,7 +100,12 @@ private GetWeatherService getWeatherService;
 
             SessionCallback<String> callback = SessionCallback.<String>builder().onResume(text -> {
 
-                sender.sendGroupMsg(msg, text+"的天气如下");
+                try {
+                    sender.sendGroupMsg(msg,"城市当前天气是:"+ getNowWeather.GetWeather(text));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                sender.sendGroupMsg(msg, text+"近日天气如下");
 
                 MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
                 ArrayList<HashMap<String, String>> weather = getWeather.getWeather(text);
@@ -118,11 +126,6 @@ private GetWeatherService getWeatherService;
                                    .append("\n降水概率，范围0~100:").append(stringStringHashMap.get("降水概率，范围0~100"))
                                    .append("\n降水量，单位mm").append(stringStringHashMap.get("风向文字"))
                                    .append("\n风向角度，范围0~360，0为正北，90为正东，180为正南，270为正西:").append(stringStringHashMap.get("风向角度，范围0~360，0为正北，90为正东，180为正南，270为正西"));
-
-//                        for (String string : strings) {
-//                            re.append(string).append(":").append(stringStringHashMap.get(string)).append("\n");
-//
-//                        }
                         forwardBuilder.add(finalGroup.getBotInfo(), String.valueOf(re));
                     }
 
@@ -138,10 +141,10 @@ private GetWeatherService getWeatherService;
                 if (e instanceof TimeoutException) {
                     // 超时事件是 waiting的第三个参数，可以省略，默认下，超时时间为 1分钟
                     // 这个默认的超时时间可以通过配置 simbot.core.continuousSession.defaultTimeout 进行指定。如果小于等于0，则没有超时，但是不推荐不设置超时。
-                    System.out.println("onError: 超时啦: " + e);
+              //     System.out.println("onError: 超时啦: " + e);
                     sender.sendGroupMsg(msg, "超时啦");
                 } else {
-                    System.out.println("onError: 出错啦: " + e);
+                 //   System.out.println("onError: 出错啦: " + e);
                     sender.sendGroupMsg(msg, "出错啦");
                 }
             }).onCancel(e -> {

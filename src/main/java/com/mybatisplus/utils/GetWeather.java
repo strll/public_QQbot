@@ -14,6 +14,9 @@ import java.util.Set;
 @Service
 public class GetWeather {
 
+
+
+
     public ArrayList<HashMap<String, String>> getWeather(String where) {
         ArrayList<HashMap<String, String>> array = new ArrayList<>();
         String body = "";
@@ -64,10 +67,8 @@ public class GetWeather {
             }
         return  add3;
         }
-
         private static ArrayList<HashMap<String, String>> add( HashMap<String, String> hashMap,ArrayList<HashMap<String, String>> array,Object o21){
             JSONObject object = (JSONObject) o21;
-
             hashMap.put("当天最低温度", (String) object.get("low"));
             hashMap.put("当天最高温度", (String) object.get("high"));
             hashMap.put("相对湿度，0~100，单位为百分比", (String) object.get("humidity"));
