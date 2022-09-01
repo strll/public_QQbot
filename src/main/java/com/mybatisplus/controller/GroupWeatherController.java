@@ -108,24 +108,52 @@ private GetWeatherService getWeatherService;
                 sender.sendGroupMsg(msg, text+"近日天气如下");
 
                 MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
-                ArrayList<HashMap<String, String>> weather = getWeather.getWeather(text);
+              //  ArrayList<HashMap<String, String>> weather = getWeather.getWeather(text);
+                HashMap<Integer, HashMap<String, String>> betterWeather=null;
+                try {
+                    betterWeather = getWeather.getBetterWeather(text);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 GroupMsg finalGroup = msg;
 
+                HashMap<Integer, HashMap<String, String>> finalBetterWeather = betterWeather;
                 builder.forwardMessage(forwardBuilder -> {
-                    for (HashMap<String, String> stringStringHashMap : weather) {
+//                    for (HashMap<String, String> stringStringHashMap : weather) {
+//                        StringBuffer re=new StringBuffer();
+//                        Set<String> strings = stringStringHashMap.keySet();
+//                           re.append("日期:").append(stringStringHashMap.get("日期"))
+//                                   .append("\n晚间天气:").append(stringStringHashMap.get("晚间天气"))
+//                                   .append("\n白天天气:").append(stringStringHashMap.get("白天天气"))
+//                                   .append("\n当天最高温度:").append(stringStringHashMap.get("当天最高温度"))
+//                                   .append("\n当天最低温度:").append(stringStringHashMap.get("当天最低温度"))
+//                                   .append("风力等级:").append( stringStringHashMap.get("风力等级"))
+//                                   .append("\n风速，单位为km/h公里每小时或mph英里每小时:").append(stringStringHashMap.get("风速，单位为km/h公里每小时或mph英里每小时"))
+//                                   .append("\n相对湿度，0~100，单位为百分比:").append(stringStringHashMap.get("相对湿度，0~100，单位为百分比"))
+//                                   .append("\n降水概率，范围0~100:").append(stringStringHashMap.get("降水概率，范围0~100"))
+//                                   .append("\n降水量，单位mm").append(stringStringHashMap.get("风向文字"))
+//                                   .append("\n风向角度，范围0~360，0为正北，90为正东，180为正南，270为正西:").append(stringStringHashMap.get("风向角度，范围0~360，0为正北，90为正东，180为正南，270为正西"));
+//                        forwardBuilder.add(finalGroup.getBotInfo(), String.valueOf(re));
+//                    }
+
+
+                    for (int i = 0; i < 3; i++) {
                         StringBuffer re=new StringBuffer();
-                        Set<String> strings = stringStringHashMap.keySet();
-                           re.append("日期:").append(stringStringHashMap.get("日期"))
-                                   .append("\n晚间天气:").append(stringStringHashMap.get("晚间天气"))
-                                   .append("\n白天天气:").append(stringStringHashMap.get("白天天气"))
-                                   .append("\n当天最高温度:").append(stringStringHashMap.get("当天最高温度"))
-                                   .append("\n当天最低温度:").append(stringStringHashMap.get("当天最低温度"))
-                                   .append("风力等级:").append( stringStringHashMap.get("风力等级"))
-                                   .append("\n风速，单位为km/h公里每小时或mph英里每小时:").append(stringStringHashMap.get("风速，单位为km/h公里每小时或mph英里每小时"))
-                                   .append("\n相对湿度，0~100，单位为百分比:").append(stringStringHashMap.get("相对湿度，0~100，单位为百分比"))
-                                   .append("\n降水概率，范围0~100:").append(stringStringHashMap.get("降水概率，范围0~100"))
-                                   .append("\n降水量，单位mm").append(stringStringHashMap.get("风向文字"))
-                                   .append("\n风向角度，范围0~360，0为正北，90为正东，180为正南，270为正西:").append(stringStringHashMap.get("风向角度，范围0~360，0为正北，90为正东，180为正南，270为正西"));
+                        HashMap<String, String> hashMap = finalBetterWeather.get(i);
+                        re.append("")
+                                .append("预报日期: ").append(hashMap.get("预报日期")).append("\n")
+                                .append("最高温度: ").append(hashMap.get("最高温度")).append("\n")
+                                .append("最低温度: ").append(hashMap.get("最低温度")).append("\n")
+                                .append("白天天气状况: ").append(hashMap.get("白天天气状况")).append("\n")
+                                .append("夜晚天气状况: ").append(hashMap.get("夜晚天气状况")).append("\n")
+                                .append("白天风向: ").append(hashMap.get("白天风向")).append("\n")
+                                .append("白天风力等级: ").append(hashMap.get("白天风力等级")).append("\n")
+                                .append("夜间风向: ").append(hashMap.get("夜间当天风向")).append("\n")
+                                .append("夜间风力等级: ").append(hashMap.get("夜间风力等级")).append("\n")
+                                .append("能见度: ").append(hashMap.get("能见度")).append("公里\n")
+                                .append("相对湿度: ").append(hashMap.get("相对湿度")).append("\n")
+                                .append("当天总降水量: ").append(hashMap.get("当天总降水量")).append("\n");
                         forwardBuilder.add(finalGroup.getBotInfo(), String.valueOf(re));
                     }
 

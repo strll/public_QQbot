@@ -149,12 +149,13 @@ public class GroupDeleteSessionAreaEvent {
         if(size!=0) {
             for (String string : strings) {
                 //如果这个qq号和触发这个函数的QQ号相同并且权限满足
-                if (string.contains(accountCode) || Integer.parseInt(adminService.get_Admin_permission(accountCode).getPermission()) < 2) {
+              //  if (string.contains(accountCode) || Integer.parseInt(adminService.get_Admin_permission(accountCode).getPermission()) < 2) {
+                if(true){
                       int i = 0;
                       int b = 0;
                     i = service.DeleteMessage(text);
 
-                    b = service.DeleteMessage_By_QQ(text, accountCode);
+               //     b = service.DeleteMessage_By_QQ(text, accountCode);
                     if (b+i == 0) {
                         session.push(AREA1_GROUP, key, "删除失败");
 

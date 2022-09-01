@@ -2,11 +2,13 @@ package com.mybatisplus.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -14,7 +16,48 @@ import java.util.Set;
 @Service
 public class GetWeather {
 
+    public HashMap<Integer,HashMap<String, String>> getBetterWeather(String city) throws IOException {
+        Connection.Response execute = Jsoup.connect("https://geoapi.qweather.com/v2/city/lookup?&key=e0757a5474934a88ae69a2e8f2746a83&location="+city)
+                .postDataCharset("UTF-8")
+                .ignoreContentType(true)
+                .execute();
+        String body = execute.body();
 
+        JSONObject jsonObject = JSONObject.parseObject(body);
+        JSONArray location = jsonObject.getJSONArray("location");
+        JSONObject o = (JSONObject)location.get(0);
+        String lat = o.getString("lat");
+        String lon = o.getString("lon");
+        System.out.println(lat+"="+lon);
+        Connection.Response weather = Jsoup.connect("https://devapi.qweather.com/v7/weather/3d?key=e0757a5474934a88ae69a2e8f2746a83&location="+lon+","+lat+"&lang=zh")
+                .postDataCharset("UTF-8")
+                .ignoreContentType(true)
+                .execute();
+        String stringweater = weather.body();
+  
+        JSONObject weatherJson = JSONObject.parseObject(stringweater);
+        HashMap<Integer,HashMap<String, String>> remap = new HashMap<Integer,HashMap<String, String>> ();
+        JSONArray daily = weatherJson.getJSONArray("daily");
+        for (int i = 0; i < 3; i++) {
+            HashMap<String, String> hashMap = new HashMap<>();
+            JSONObject o1 =(JSONObject) daily.get(i);
+            hashMap.put("预报日期",o1.getString("fxDate"));
+            hashMap.put("最高温度",o1.getString("tempMax"));
+            hashMap.put("最低温度",o1.getString("tempMin"));
+            hashMap.put("白天天气状况",o1.getString("textDay"));
+            hashMap.put("夜晚天气状况",o1.getString("textNight"));
+            hashMap.put("白天风向",o1.getString("windDirDay"));
+            hashMap.put("白天风力等级",o1.getString("windScaleDay"));
+            hashMap.put("夜间当天风向",o1.getString("windDirNight"));
+            hashMap.put("夜间风力等级",o1.getString("windScaleNight"));
+            hashMap.put("能见度",o1.getString("vis"));
+            hashMap.put("相对湿度",o1.getString("humidity"));
+            hashMap.put("当天总降水量",o1.getString("precip"));
+            remap.put(i,hashMap);
+        }
+
+        return remap;
+    }
 
 
     public ArrayList<HashMap<String, String>> getWeather(String where) {
