@@ -16,8 +16,8 @@ import java.net.URL;
 public class GetNews {
 
     public String EveryDayNews() throws IOException {
-        //https://www.zhihu.com/column/c_1261258401923026944
-        //RichContent-inner >p
+
+
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.readValue(new URL("https://www.zhihu.com/api/v4/columns/c_1261258401923026944/items"), JsonNode.class);
         String contentHtml = jsonNode.get("data").get(0).get("content").asText();

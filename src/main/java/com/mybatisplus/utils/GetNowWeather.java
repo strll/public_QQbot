@@ -5,14 +5,21 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
+
+
 @Component
 public class GetNowWeather {
+
+    @Value("${key}")
+    String key;
+
     public String GetWeather(String city) throws IOException {
-        Connection.Response execute = Jsoup.connect("https://geoapi.qweather.com/v2/city/lookup?&key=e0757a5474934a88ae69a2e8f2746a83&location="+city)
+        Connection.Response execute = Jsoup.connect("https://geoapi.qweather.com/v2/city/lookup?&key="+key+"&location="+city)
                 .postDataCharset("UTF-8")
                 .ignoreContentType(true)
                 .execute();
@@ -24,7 +31,7 @@ public class GetNowWeather {
         String lat = o.getString("lat");
         String lon = o.getString("lon");
         System.out.println(lat+"="+lon);
-        Connection.Response weather = Jsoup.connect("https://devapi.qweather.com/v7/weather/now?key=e0757a5474934a88ae69a2e8f2746a83&location="+lon+","+lat+"&lang=zh")
+        Connection.Response weather = Jsoup.connect("https://devapi.qweather.com/v7/weather/now?key="+key+"&location="+lon+","+lat+"&lang=zh")
                 .postDataCharset("UTF-8")
                 .ignoreContentType(true)
                 .execute();
