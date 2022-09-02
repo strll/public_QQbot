@@ -167,6 +167,8 @@ private Random_say random_say;
                     "\n 14.戳一戳nana发送信息"
                     +"\n 15.nana翻译(示例: nana翻译 hello)"
                     +"\n 16.nana百度(使用方法示例: nana百度 春节)"
+                    +"\n 17.nana查询 使用方法同上"
+                    +"\n 18.nana摸鱼日历"
                     );
             forwardBuilder.add(groupMsg.getBotInfo(),"nana模块管理(管理员使用)");
             forwardBuilder.add(groupMsg.getBotInfo(),"更多功能正在开发中(指刚刚新建好文件夹)");
