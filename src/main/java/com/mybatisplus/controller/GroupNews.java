@@ -45,7 +45,7 @@ public class GroupNews {
         // 发送消息
         sender.sendGroupMsg(msg, messageContent);
 
- //      sender.sendGroupMsg(msg, s);
+
     }
 
 }

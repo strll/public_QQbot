@@ -10,6 +10,7 @@ import com.mybatisplus.entity.Message;
 import com.mybatisplus.listener.MyNewGroupMemberListen;
 import com.mybatisplus.service.IAdminService;
 import com.mybatisplus.service.IMessageService;
+import com.mybatisplus.utils.GetMoYu;
 import com.mybatisplus.utils.GetNews;
 import com.mybatisplus.utils.HistoryTody;
 import com.mybatisplus.utils.Random_say;
@@ -110,7 +111,8 @@ private IMessageService service;
     private volatile boolean send_flag=true; //回复模块启动标志
 
     private volatile boolean ds_flag=true; //定时模块启动标志
-
+@Autowired
+private GetMoYu moyu;
 
 
     /**
@@ -349,7 +351,6 @@ private Random_say random_say;
                     for (String s : split) {
                         sbuilder.append(s).append("\n");
                              }
-            //        String n = s.replaceAll("n", " ");
                     forwardBuilder.add(finalGroup.getBotInfo(), String.valueOf(sbuilder));
 
                 });
@@ -362,6 +363,19 @@ private Random_say random_say;
 
         }
 
+    @Scheduled(cron="0 30 7 * * *")
+    public void moyu(){
+        if(ds_flag) {
+            GroupMsg group = null;
+            Sender sender = null;
+            for (Group_And_Sender group_and_sender : set) {
+                group = group_and_sender.getGroup();
+                sender = group_and_sender.getSender();
+                sender.sendGroupMsg(group, moyu.getMoyu());
+            }
+        }
+    }
+
 
     @Autowired
     private GetNews getNews;
@@ -373,17 +387,7 @@ private Random_say random_say;
             for (Group_And_Sender group_and_sender : set) {
                 GroupMsg group = group_and_sender.getGroup();
                 Sender sender = group_and_sender.getSender();
-
-
-//                String finalS = s;
-//                GroupMsg finalGroup = group;
-//                builder.forwardMessage(forwardBuilder -> {
-//                    forwardBuilder.add(finalGroup.getBotInfo(), finalS);
-//                });
-//                final MiraiMessageContent messageContent = builder.build();
-                sender.sendGroupMsg(group, "早上好 这是今天的每日新闻 本新闻来源于知乎");
-                // 发送消息
-            //    sender.sendGroupMsg(group, messageContent);
+                 sender.sendGroupMsg(group, "早上好 这是今天的每日新闻 本新闻来源于知乎");
 
                 String historytody = historyTody.historytody();
                 String finalS = historytody;
@@ -395,9 +399,10 @@ private Random_say random_say;
                     for (String s1 : split) {
                         forwardBuilder.add(finalGroup.getBotInfo(), s1);
                     }
-
-
                 });
+                MiraiMessageContent build = builder.build();
+                sender.sendGroupMsg(group, build );
+
             }
         }
     }
@@ -503,6 +508,7 @@ private Random_say random_say;
         }
 
     //==========================================================================
+
 
 
 

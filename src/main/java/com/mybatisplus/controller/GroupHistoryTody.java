@@ -41,16 +41,11 @@ public class GroupHistoryTody {
             for (String s : split) {
                 forwardBuilder.add(finalGroup.getBotInfo(), s);
             }
-
-
         });
-
 
         final MiraiMessageContent messageContent = builder.build();
         sender.sendGroupMsg(msg, "您好 这是历史上的今天");
         // 发送消息
         sender.sendGroupMsg(msg, messageContent);
-
-
     }
 }

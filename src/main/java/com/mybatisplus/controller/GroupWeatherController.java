@@ -80,7 +80,8 @@ private GetWeatherService getWeatherService;
 
     @Autowired
     private GetWeather getWeather;
-    @OnGroup
+
+        @OnGroup
     @Filter(value = "nana天气", matchType = MatchType.STARTS_WITH)
     @ListenBreak
     public void testConversationDomain(GroupMsg msg, ListenerContext context, Sender sender) throws Exception{
@@ -100,11 +101,11 @@ private GetWeatherService getWeatherService;
 
             SessionCallback<String> callback = SessionCallback.<String>builder().onResume(text -> {
 
-                try {
-                    sender.sendGroupMsg(msg,"城市当前天气是:"+ getNowWeather.GetWeather(text));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+             //   try {
+            //        sender.sendGroupMsg(msg,"城市当前天气是:"+ getNowWeather.GetWeather(text));
+            //    } catch (IOException e) {
+            //        e.printStackTrace();
+            //    }
                 sender.sendGroupMsg(msg, text+"近日天气如下");
 
                 MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
@@ -137,10 +138,16 @@ private GetWeatherService getWeatherService;
 //                        forwardBuilder.add(finalGroup.getBotInfo(), String.valueOf(re));
 //                    }
 
+                    try {
+                        forwardBuilder.add(finalGroup.getBotInfo(), "城市当前天气是:"+ getNowWeather.GetWeather(text));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                     for (int i = 0; i < 3; i++) {
                         StringBuffer re=new StringBuffer();
                         HashMap<String, String> hashMap = finalBetterWeather.get(i);
+
                         re.append("")
                                 .append("预报日期: ").append(hashMap.get("预报日期")).append("\n")
                                 .append("最高温度: ").append(hashMap.get("最高温度")).append("\n")

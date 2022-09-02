@@ -26,19 +26,17 @@ public class GroupBaiDu {
     private MessageContentBuilderFactory factory;
 
     @OnGroup
-    @Filter(value = "nana百度", trim=true,matchType = MatchType.CONTAINS)
+    @Filter(value = "nana查询", trim=true,matchType = MatchType.CONTAINS)
     public void listenSong1(GroupMsg msg, MsgSender sender) throws IOException {
         MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
-
         String text = msg.getText().substring(6);
         String yiqing="";
         HashMap baiDu=null;
         try {
             baiDu = getBaiDu.getBaiDu(text);
         }catch (Exception e){
-            sender.SENDER.sendGroupMsg(msg,"查询百度失败");
+            sender.SENDER.sendGroupMsg(msg,"查询失败");
         }
-
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append((String)baiDu.get("title")).append("\n").append((String) baiDu.get("content")).append("\n"
         );
@@ -54,4 +52,21 @@ public class GroupBaiDu {
         final MiraiMessageContent messageContent = builder.build();
         sender.SENDER.sendGroupMsg(msg,messageContent);
     }
+
+    @OnGroup
+    @Filter(value = "nana百度", trim=true,matchType = MatchType.CONTAINS)
+    public void listenSong12(GroupMsg msg, MsgSender sender) throws IOException {
+        MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
+        String text = msg.getText().substring(6);
+        String yiqing="";
+       String baiDu=null;
+        try {
+            baiDu = getBaiDu.getChaXun(text);
+        }catch (Exception e){
+            sender.SENDER.sendGroupMsg(msg,"查询百度失败");
+        }
+        sender.SENDER.sendGroupMsg(msg, baiDu);
+    }
+
+
 }
