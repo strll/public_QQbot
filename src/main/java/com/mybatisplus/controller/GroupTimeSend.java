@@ -2,7 +2,7 @@ package com.mybatisplus.controller;
 
 import com.mybatisplus.entity.Group_And_Sender;
 import com.mybatisplus.service.IAdminService;
-import com.mybatisplus.service.impl.Group_And_Sender_Storehouse_Impl;
+
 import com.mybatisplus.utils.GetMoYu;
 import com.mybatisplus.utils.GetNews;
 import com.mybatisplus.utils.HistoryTody;
@@ -26,6 +26,7 @@ import java.util.HashSet;
 
 @Controller
 public class GroupTimeSend {
+    private HashSet<Group_And_Sender> hashset=new HashSet();
     @Autowired
     private IAdminService adminService;
 
@@ -36,8 +37,6 @@ public class GroupTimeSend {
     @Autowired
     private GetMoYu moyu;
 
-    @Autowired
-    private Group_And_Sender_Storehouse_Impl group_and_sender_storehouse;
 
 
 
@@ -48,7 +47,8 @@ public class GroupTimeSend {
         AccountInfo accountInfo = msg.getAccountInfo();
         String accountCode = accountInfo.getAccountCode();  //获取发送人的QQ号
         if (Integer.parseInt(adminService.get_Admin_permission(accountCode).getPermission()) <= 2) {
-            boolean add = group_and_sender_storehouse.add(msg, sender);
+            Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
+            boolean add = hashset.add(group_and_sender);
             if (add){
                 sender.sendGroupMsg(msg,"添加成功");
             }else{
@@ -63,7 +63,8 @@ public class GroupTimeSend {
         AccountInfo accountInfo = msg.getAccountInfo();
         String accountCode = accountInfo.getAccountCode();  //获取发送人的QQ号
         if (Integer.parseInt(adminService.get_Admin_permission(accountCode).getPermission()) <= 2) {
-            boolean add = group_and_sender_storehouse.remove(msg, sender);
+            Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
+            boolean add = hashset.remove(group_and_sender);
             if (add){
                 sender.sendGroupMsg(msg,"添加成功");
             }else{
@@ -105,10 +106,9 @@ public class GroupTimeSend {
     @Scheduled(cron="0 30 7 * * *")
     public void send_morning(){
         if(ds_flag) {
-            HashSet<Group_And_Sender> group_and_senders = group_and_sender_storehouse.get();
-            GroupMsg group = null;
+           GroupMsg group = null;
             Sender sender = null;
-            for (Group_And_Sender group_and_sender : group_and_senders) {
+            for (Group_And_Sender group_and_sender : hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "早上起来 拥抱太阳! 今天大家也要好好吃饭 ");
@@ -122,9 +122,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-            HashSet<Group_And_Sender> group_and_senders = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : group_and_senders) {
+            for (Group_And_Sender group_and_sender : hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "大家好 希望大家多喝热水 不要长时间久坐");
@@ -137,9 +136,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-            HashSet<Group_And_Sender> group_and_senders = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender :group_and_senders) {
+            for (Group_And_Sender group_and_sender : hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "工作时间到了 希望大家在工作中都有一个好心情 改摸鱼就摸鱼吧 一定要记得放松一下自己哦");
@@ -151,9 +149,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-            HashSet<Group_And_Sender> group_and_senders = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : group_and_senders) {
+            for (Group_And_Sender group_and_sender :  hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "十点啦 去接个水上个厕所 走动一下吧 适当的摸鱼可以保持一天的好心情哦");
@@ -166,9 +163,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-            HashSet<Group_And_Sender> set = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : set) {
+            for (Group_And_Sender group_and_sender :  hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "周五下班了 这一周工作辛苦了 周末就好好放松一下吧");
@@ -182,9 +178,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-            HashSet<Group_And_Sender> set = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : set) {
+            for (Group_And_Sender group_and_sender :  hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "下班啦下班了 今天也好好的犒劳一下自己吧");
@@ -198,9 +193,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-            HashSet<Group_And_Sender> set = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : set) {
+            for (Group_And_Sender group_and_sender :  hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "希望大家不要久坐 多从位置上起来走走");
@@ -214,9 +208,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-            HashSet<Group_And_Sender> set = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : set) {
+            for (Group_And_Sender group_and_sender :  hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "晚上好 今天晚上也要好好吃饭");
@@ -230,9 +223,8 @@ public class GroupTimeSend {
         if(ds_flag){
             GroupMsg group=null;
             Sender sender =null;
-            HashSet<Group_And_Sender> set = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : set) {
+            for (Group_And_Sender group_and_sender : hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group,"中午好 中午记得要午休哦");
@@ -248,8 +240,7 @@ public class GroupTimeSend {
     @Scheduled(cron="0 0 7 * * * ")
     public void historyTody(){
         if(ds_flag) {
-            HashSet<Group_And_Sender> set = group_and_sender_storehouse.get();
-            for (Group_And_Sender group_and_sender : set) {
+            for (Group_And_Sender group_and_sender :  hashset) {
                 GroupMsg group = group_and_sender.getGroup();
                 Sender sender = group_and_sender.getSender();
 
@@ -283,9 +274,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-            HashSet<Group_And_Sender> set = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : set) {
+            for (Group_And_Sender group_and_sender :  hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, moyu.getMoyu());
@@ -301,9 +291,8 @@ public class GroupTimeSend {
         if(ds_flag) {
             MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
             String s = getNews.EveryDayNews();
-            HashSet<Group_And_Sender> set = group_and_sender_storehouse.get();
 
-            for (Group_And_Sender group_and_sender : set) {
+            for (Group_And_Sender group_and_sender :  hashset) {
                 GroupMsg group = group_and_sender.getGroup();
                 Sender sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "早上好 这是今天的每日新闻 本新闻来源于知乎");

@@ -8,13 +8,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.mybatisplus.entity.Group_And_Sender;
 import com.mybatisplus.entity.Message;
 import com.mybatisplus.listener.MyNewGroupMemberListen;
-import com.mybatisplus.service.Group_And_Sender_Storehouse;
+
 import com.mybatisplus.service.IAdminService;
 import com.mybatisplus.service.IMessageService;
-import com.mybatisplus.service.impl.Group_And_Sender_Storehouse_Impl;
-import com.mybatisplus.utils.GetMoYu;
-import com.mybatisplus.utils.GetNews;
-import com.mybatisplus.utils.HistoryTody;
+
 import com.mybatisplus.utils.Random_say;
 import love.forte.simbot.annotation.*;
 import love.forte.simbot.api.message.MessageContent;
@@ -100,13 +97,12 @@ private IMessageService service;
 
 //    private HashSet<Group_And_Sender> set=new HashSet();
 //    private Group_And_Sender group_and_sender = null;
-
+private HashSet<Group_And_Sender> hashset=new HashSet();
 
     private volatile boolean send_flag=true; //回复模块启动标志
 
 
-@Autowired
-private Group_And_Sender_Storehouse_Impl group_and_sender_storehouse;
+
 
     /**
      * 用来缓存入群申请的时候所填的信息。
@@ -206,25 +202,48 @@ private Random_say random_say;
 @OnGroup
 @Filter(value="nana添加群回复",trim=true,matchType = MatchType.CONTAINS)
 public void sendNews(GroupMsg msg, Sender sender) throws IOException {
-    boolean add = group_and_sender_storehouse.add(msg, sender);
-    if (add){
-        sender.sendGroupMsg(msg,"添加成功");
-    }else{
-        sender.sendGroupMsg(msg,"添加失败");
+    AccountInfo accountInfo = msg.getAccountInfo();
+    String accountCode = accountInfo.getAccountCode();  //获取发送人的QQ号
+    if (Integer.parseInt(adminService.get_Admin_permission(accountCode).getPermission()) <= 2) {
+
+        Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
+        boolean add = hashset.add(group_and_sender);
+        if (add) {
+            sender.sendGroupMsg(msg, "添加成功");
+        } else {
+            sender.sendGroupMsg(msg, "已存在该群");
+        }
     }
 }
+    //==================================
+    @org.springframework.scheduling.annotation.Async
+    @OnGroup
+    @Filter(value="nana取消群回复",trim=true,matchType = MatchType.CONTAINS)
+    public void removesend(GroupMsg msg, Sender sender) throws IOException {
+        AccountInfo accountInfo = msg.getAccountInfo();
+        String accountCode = accountInfo.getAccountCode();  //获取发送人的QQ号
+        if (Integer.parseInt(adminService.get_Admin_permission(accountCode).getPermission()) <= 2) {
 
+
+            Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
+            boolean add = hashset.remove(group_and_sender);
+            if (add) {
+                sender.sendGroupMsg(msg, "取消成功");
+            } else {
+                sender.sendGroupMsg(msg, "取消失败");
+            }
+        }
+    }
 //====================================================
 
     @Async
     @OnGroup
     public void onGroupMsg(GroupMsg groupMsg,Sender sender) throws IOException {
-
-        HashSet<Group_And_Sender> group_and_senders = group_and_sender_storehouse.get();
-        Group_And_Sender group_and_sender = new Group_And_Sender();
+        Group_And_Sender group_and_sender= new Group_And_Sender(groupMsg, sender);
         group_and_sender.setSender(sender);
         group_and_sender.setGroup(groupMsg);
-        if (send_flag&&group_and_senders.contains(group_and_sender)) {
+
+        if (send_flag&&hashset.contains(group_and_sender)) {
             String valuemessage = "";
             String text = groupMsg.getText();//获取发生信息
 //            group_and_sender = new Group_And_Sender();
