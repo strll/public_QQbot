@@ -12,14 +12,10 @@ import java.io.IOException;
 
 @Controller
 public class GetYiQing {
-    public String getyiqing(String city) throws IOException {
-//        Document document = Jsoup.connect("http://www.xiaoqiandtianyi.tk/api/yq.php?msg="+city).get();
-//        Elements body = document.select("body");
-//        String text = body.text();
-//        String s = text.replaceAll("\uD83C\uDF3E", "\n");
-//      //  return s.substring(1);
 
-        Connection.Response yq = Jsoup.connect("https://api.gt5.cc/api/yq?msg="+city+"&type=json")
+    public String getyiqing(String city) throws IOException {
+            String url="https://api.gt5.cc/api/yq?msg="+city.replace(" ","")+"&type=json";
+        Connection.Response yq = Jsoup.connect(url)
                 .postDataCharset("UTF-8")
                 .ignoreContentType(true)
                 .execute();
