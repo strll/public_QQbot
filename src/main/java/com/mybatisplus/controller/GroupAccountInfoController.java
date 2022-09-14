@@ -140,10 +140,11 @@ private HashSet<Group_And_Sender> hashset=new HashSet();
                     "\n 13.nana历史上的今天"+
                     "\n 14.戳一戳nana发送信息"
                     +"\n 15.nana翻译(示例: nana翻译 hello)"
-                    +"\n 16.nana百度(使用方法示例: nana百度 春节)"
-                    +"\n 17.nana查询 使用方法同上"
+                    +"\n 16.nana百度(使用方法示例: nana百度 春节) "
+                    +"\n 17.nana查询 使用方法同上(改接口失效请使用百度功能进行搜索)"
                     +"\n 18.nana摸鱼日历"+
                             "\n 19.nana找番(用法: nana找番+动漫截图)"
+                    +"\n 20.nana聊天(nana监听你发送的信息并且做出回复 退出请输入nana退出聊天)"
                     );
             forwardBuilder.add(groupMsg.getBotInfo(),"nana模块管理(管理员使用)");
             forwardBuilder.add(groupMsg.getBotInfo(),"更多功能正在开发中(指刚刚新建好文件夹)");
@@ -169,11 +170,13 @@ private HashSet<Group_And_Sender> hashset=new HashSet();
                     "nana关闭定时模块\n" +
                     "nana启动定时模块\n" +
                     "nana关闭天气模块\n" +
-                    "nana启动天气模块 (超级管理员使用)"
+                    "nana启动天气模块 (超级管理员使用)\n"
                     +"nana添加群定时\n"
                     +"nana取消群定时\n"
                     +"nana添加群回复\n"
                     +"nana取消群回复\n"
+                    +"nana开启聊天模块 \n"
+                    +"nana关闭聊天模块\n"
             );
         });
 
