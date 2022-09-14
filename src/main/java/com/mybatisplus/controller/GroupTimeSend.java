@@ -66,9 +66,9 @@ public class GroupTimeSend {
             Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
             boolean add = hashset.remove(group_and_sender);
             if (add){
-                sender.sendGroupMsg(msg,"添加成功");
+                sender.sendGroupMsg(msg,"取消成功");
             }else{
-                sender.sendGroupMsg(msg,"添加失败");
+                sender.sendGroupMsg(msg,"取消失败");
             }
         }
 
@@ -117,46 +117,46 @@ public class GroupTimeSend {
         }
     }
 
-    @Scheduled(cron="0 30 9 * * *")
-    public void tg(){
-        if(ds_flag) {
-            GroupMsg group = null;
-            Sender sender = null;
+//    @Scheduled(cron="0 30 9 * * *")
+//    public void tg(){
+//        if(ds_flag) {
+//            GroupMsg group = null;
+//            Sender sender = null;
+//
+//            for (Group_And_Sender group_and_sender : hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group, "大家好 希望大家多喝热水 不要长时间久坐");
+//            }
+//        }
+//    }
 
-            for (Group_And_Sender group_and_sender : hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group, "大家好 希望大家多喝热水 不要长时间久坐");
-            }
-        }
-    }
-
-    @Scheduled(cron="0 0 9 ? * MON-FRI")
-    public void sb(){
-        if(ds_flag) {
-            GroupMsg group = null;
-            Sender sender = null;
-
-            for (Group_And_Sender group_and_sender : hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group, "工作时间到了 希望大家在工作中都有一个好心情 改摸鱼就摸鱼吧 一定要记得放松一下自己哦");
-            }
-        }
-    }
-    @Scheduled(cron="0 0 10 ? * MON-FRI")
-    public void sb1(){
-        if(ds_flag) {
-            GroupMsg group = null;
-            Sender sender = null;
-
-            for (Group_And_Sender group_and_sender :  hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group, "十点啦 去接个水上个厕所 走动一下吧 适当的摸鱼可以保持一天的好心情哦");
-            }
-        }
-    }
+//    @Scheduled(cron="0 0 9 ? * MON-FRI")
+//    public void sb(){
+//        if(ds_flag) {
+//            GroupMsg group = null;
+//            Sender sender = null;
+//
+//            for (Group_And_Sender group_and_sender : hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group, "工作时间到了 希望大家在工作中都有一个好心情 改摸鱼就摸鱼吧 一定要记得放松一下自己哦");
+//            }
+//        }
+//    }
+//    @Scheduled(cron="0 0 10 ? * MON-FRI")
+//    public void sb1(){
+//        if(ds_flag) {
+//            GroupMsg group = null;
+//            Sender sender = null;
+//
+//            for (Group_And_Sender group_and_sender :  hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group, "十点啦 去接个水上个厕所 走动一下吧 适当的摸鱼可以保持一天的好心情哦");
+//            }
+//        }
+//    }
 
     @Scheduled(cron="0 0 18 ? * FRI")
     public void sb2(){
@@ -261,7 +261,7 @@ public class GroupTimeSend {
 
                 });
                 final MiraiMessageContent messageContent = builder.build();
-
+                sender.sendGroupMsg(group, "早上好,这是历史上的今天");
                 // 发送消息
                 sender.sendGroupMsg(group, messageContent);
             }
@@ -291,21 +291,15 @@ public class GroupTimeSend {
         if(ds_flag) {
             MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
             String s = getNews.EveryDayNews();
-
+            String[] split = s.split("\n");
             for (Group_And_Sender group_and_sender :  hashset) {
                 GroupMsg group = group_and_sender.getGroup();
                 Sender sender = group_and_sender.getSender();
                 sender.sendGroupMsg(group, "早上好 这是今天的每日新闻 本新闻来源于知乎");
-
-                String historytody = historyTody.historytody();
-                String finalS = historytody;
-                String replace = finalS.replaceAll("\\\\", "").replaceAll(",", "\n").replace("[", "").replace("]", "").replaceAll("\"","");
-
                 GroupMsg finalGroup =  group_and_sender.getGroup();
                 builder.forwardMessage(forwardBuilder -> {
-                    String[] split = replace.split("\n");
-                    for (String s1 : split) {
-                        forwardBuilder.add(finalGroup.getBotInfo(), s1);
+                    for (int i = 1; i < split.length; i++) {
+                        forwardBuilder.add(finalGroup.getBotInfo(), split[i]);
                     }
                 });
                 MiraiMessageContent build = builder.build();

@@ -24,13 +24,11 @@ public class GetNews {
      //   System.out.println(contentHtml);
         Document parse = Jsoup.parse(contentHtml);
         StringBuilder result = new StringBuilder();
-
-
         Elements allElements = parse.getAllElements();
         for (Element element : allElements) {
             if("img".equals(element.tagName())){
                 String url = element.attr("src");
-  //             result.append("[CAT:image,file=").append(url).append("]\n");
+               result.append("[CAT:image,file=").append(url).append("]\n");
             }else if("p".equals(element.tagName())) {
                 String content = element.text().trim();
                 result.append(content).append("\n");
@@ -40,14 +38,4 @@ public class GetNews {
 
         return result.toString();
     }
-
-    //        parse.getAllElements().forEach(e -> {
-//            if ("img".equals(e.tagName())){
-//                String imageUrl = e.attr("src");
-//                result.append("[").append(imageUrl).append("]\n");
-//            }else if("p".equals(e.tagName())){
-//                String content = e.text().trim();
-//                result.append(content).append("\n");
-//            }
-//        });
 }

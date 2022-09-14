@@ -35,15 +35,15 @@ public class GroupNews {
         MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
         String s= getNews.EveryDayNews();
             GroupMsg finalGroup = msg;
-        String[] split = s.split("；");
+        String[] split = s.split("\n");
         builder.forwardMessage(forwardBuilder -> {
-            for (String s1 : split) {
-                forwardBuilder.add(finalGroup.getBotInfo(), s1 );
+            for (int i = 1; i < split.length; i++) {
+                forwardBuilder.add(finalGroup.getBotInfo(), split[i]);
             }
         });
         final MiraiMessageContent messageContent = builder.build();
         // 发送消息
-        sender.sendGroupMsg(msg, messageContent);
+            sender.sendGroupMsg(msg, messageContent);
 
 
     }

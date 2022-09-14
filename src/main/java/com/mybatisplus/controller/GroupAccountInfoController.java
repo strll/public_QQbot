@@ -100,28 +100,13 @@ private IMessageService service;
 private HashSet<Group_And_Sender> hashset=new HashSet();
 
     private volatile boolean send_flag=true; //回复模块启动标志
-
-
-
-
-    /**
-     * 用来缓存入群申请的时候所填的信息。
-     */
-    private static final Map<String, String> REQUEST_TEXT_MAP = new ConcurrentHashMap<>();
-
-    /**
-     * logger
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(MyNewGroupMemberListen.class);
-
-
     @Autowired
     private MessageContentBuilderFactory factory;
 
     @Autowired
     private IAdminService adminService;
-@Autowired
-private Random_say random_say;
+    @Autowired
+    private Random_say random_say;
 
     @Async
     @OnGroup
@@ -157,7 +142,8 @@ private Random_say random_say;
                     +"\n 15.nana翻译(示例: nana翻译 hello)"
                     +"\n 16.nana百度(使用方法示例: nana百度 春节)"
                     +"\n 17.nana查询 使用方法同上"
-                    +"\n 18.nana摸鱼日历"
+                    +"\n 18.nana摸鱼日历"+
+                            "\n 19.nana找番(用法: nana找番+动漫截图)"
                     );
             forwardBuilder.add(groupMsg.getBotInfo(),"nana模块管理(管理员使用)");
             forwardBuilder.add(groupMsg.getBotInfo(),"更多功能正在开发中(指刚刚新建好文件夹)");
@@ -184,6 +170,10 @@ private Random_say random_say;
                     "nana启动定时模块\n" +
                     "nana关闭天气模块\n" +
                     "nana启动天气模块 (超级管理员使用)"
+                    +"nana添加群定时\n"
+                    +"nana取消群定时\n"
+                    +"nana添加群回复\n"
+                    +"nana取消群回复\n"
             );
         });
 
@@ -246,10 +236,6 @@ public void sendNews(GroupMsg msg, Sender sender) throws IOException {
         if (send_flag&&hashset.contains(group_and_sender)) {
             String valuemessage = "";
             String text = groupMsg.getText();//获取发生信息
-//            group_and_sender = new Group_And_Sender();
-//            group_and_sender.setSender(sender);
-//            group_and_sender.setGroup(groupMsg);
-//            set.add(group_and_sender);
             if (!text.equals("") && text != null) {
                 Message message = new Message();
                 message.setKeymessage(text);

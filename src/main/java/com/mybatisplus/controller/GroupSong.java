@@ -48,9 +48,9 @@ public class GroupSong {
 
     @Autowired
     private GetMuic getMuic;
-//    @OnGroup
-//    @Filter(value = "nana点歌", trim=true,matchType = MatchType.CONTAINS)
-//    @Async
+    @OnGroup
+    @Filter(value = "nana点歌", trim=true,matchType = MatchType.CONTAINS)
+    @Async
     public void listenSong(GroupMsg msg, ListenerContext context, MsgSender sender) throws IOException {
 
         ContinuousSessionScopeContext sessionContext = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
