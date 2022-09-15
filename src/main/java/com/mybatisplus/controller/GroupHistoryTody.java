@@ -37,7 +37,7 @@ public class GroupHistoryTody {
 
         GroupMsg finalGroup =  msg;
         builder.forwardMessage(forwardBuilder -> {
-            String[] split = replace.split("\n");
+            String[] split = replace.split(",");
             for (String s : split) {
                 forwardBuilder.add(finalGroup.getBotInfo(), s);
             }

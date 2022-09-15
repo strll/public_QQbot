@@ -11,19 +11,20 @@ public class HistoryTody {
     public String historytody(){
         String body="";
         try {
-            Connection.Response response = Jsoup.connect("https://api.xiao-xin.top/API/today.php")
+            Connection.Response response = Jsoup.connect("http://www.xiaoqiandtianyi.tk/api/today.php")
+                    //api地址 http://www.xiaoqiandtianyi.tk/doc/today.php
                     //.cookies(cookies)
                     .postDataCharset("UTF-8")
                     .ignoreContentType(true)
                     .execute();
             body = response.body(); // 获取html原始文本内容
-            System.out.println(body);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
         JSONObject jsonObject = JSONObject.parseObject(body);
-        JSONArray results =  jsonObject.getJSONArray("list");
+        JSONObject data =( JSONObject) jsonObject.get("data");
+        JSONArray results =  data.getJSONArray("list");
         return   results.toJSONString();
     }
 }

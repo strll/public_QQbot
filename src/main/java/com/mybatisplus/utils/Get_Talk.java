@@ -13,7 +13,8 @@ public class Get_Talk {
     //http://apii.gq/api/xiaoai.php?msg=hello
 
     public String get_talk(String msg) throws IOException {
-        Document document = Jsoup.connect("http://apii.gq/api/xiaoai.php?msg="+msg)
+        String replace = msg.replace("nana", "小爱");
+        Document document = Jsoup.connect("http://apii.gq/api/xiaoai.php?msg="+replace)
                 .get();
         Elements body = document.select("body");
         return body.text().replace("小爱","nana") ;
