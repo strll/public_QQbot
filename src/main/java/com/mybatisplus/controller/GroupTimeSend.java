@@ -243,22 +243,13 @@ public class GroupTimeSend {
             for (Group_And_Sender group_and_sender :  hashset) {
                 GroupMsg group = group_and_sender.getGroup();
                 Sender sender = group_and_sender.getSender();
-
-
                 MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
                 String historytody = historyTody.historytody();
-                String finalS = historytody;
-                String replace = finalS.replaceAll("\\\\", "").replaceAll(",", "").replace("[", "").replace("]", "").replaceAll("\"", "");
-                String[] split = replace.split("n");
-                StringBuilder sbuilder = new StringBuilder();
-
-                GroupMsg finalGroup = group;
                 builder.forwardMessage(forwardBuilder -> {
+                    String[] split = historytody.split("end");
                     for (String s : split) {
-                        sbuilder.append(s).append("\n");
+                        forwardBuilder.add(group.getBotInfo(), s);
                     }
-                    forwardBuilder.add(finalGroup.getBotInfo(), String.valueOf(sbuilder));
-
                 });
                 final MiraiMessageContent messageContent = builder.build();
                 sender.sendGroupMsg(group, "早上好,这是历史上的今天");

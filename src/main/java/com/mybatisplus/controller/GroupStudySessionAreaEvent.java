@@ -72,49 +72,53 @@ public class GroupStudySessionAreaEvent {
     @ListenBreak
     @Async
     public void testConversationDomain(GroupMsg msg, ListenerContext context, Sender sender) {
-        if(  Study_flag ) {
-            ContinuousSessionScopeContext sessionContext = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
-            assert sessionContext != null;
-            String accountCode = msg.getAccountInfo().getAccountCode();
-            String groupCode = msg.getGroupInfo().getGroupCode();
-            // 通过账号拼接一个此人在此群中的唯一key
-            String key = accountCode + "-" + groupCode+"study";
+        String text1 = msg.getText();
+        if (text1.length()==6) {
+            if (Study_flag) {
+                ContinuousSessionScopeContext sessionContext = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
+                assert sessionContext != null;
+                String accountCode = msg.getAccountInfo().getAccountCode();
+                String groupCode = msg.getGroupInfo().getGroupCode();
+                // 通过账号拼接一个此人在此群中的唯一key
+                String key = accountCode + "-" + groupCode + "study";
 
-            // 发送提示信息
-            sender.sendGroupMsg(msg, "请问您要触发的关键词是什么?");
-            SessionCallback<String> callback = SessionCallback.<String>builder().onResume(text -> {
-                sender.sendGroupMsg(msg, "请继续输入触发关键词之后要返回什么:");
-                sessionContext.waiting(AREA2_GROUP, key, text2 -> {
-                    if (text2.equals("0")) {
-                        sender.sendGroupMsg(msg, "学习失败");
+                // 发送提示信息
+                sender.sendGroupMsg(msg, "请问您要触发的关键词是什么?");
+                SessionCallback<String> callback = SessionCallback.<String>builder().onResume(text -> {
+                    sender.sendGroupMsg(msg, "请继续输入触发关键词之后要返回什么:");
+                    sessionContext.waiting(AREA2_GROUP, key, text2 -> {
+                        if (text2.equals("0")) {
+                            sender.sendGroupMsg(msg, "学习失败");
+                        } else {
+                            sender.sendGroupMsg(msg, "学习成功");
+                        }
+
+                    });
+
+                }).onError(e -> {
+                    // 这里是第一个会话，此处通过 onError 来处理出现了异常的情况，例如超时
+                    if (e instanceof TimeoutException) {
+                        // 超时事件是 waiting的第三个参数，可以省略，默认下，超时时间为 1分钟
+                        // 这个默认的超时时间可以通过配置 simbot.core.continuousSession.defaultTimeout 进行指定。如果小于等于0，则没有超时，但是不推荐不设置超时。
+                        System.out.println("onError: 超时啦: " + e);
+                        sender.sendGroupMsg(msg, "超时啦");
                     } else {
-                        sender.sendGroupMsg(msg, "学习成功");
+                        System.out.println("onError: 出错啦: " + e);
+                        sender.sendGroupMsg(msg, "出错啦");
                     }
+                }).onCancel(e -> {
+                    // 这里是第一个会话，此处通过 onCancel 来处理会话被手动关闭、超时关闭的情况的处理，有些时候会与 orError 同时被触发（例如超时的时候）
+                    System.out.println("onCancel 关闭啦: " + e);
+                }).build(); // build 构建
 
-                });
-
-            }).onError(e -> {
-                // 这里是第一个会话，此处通过 onError 来处理出现了异常的情况，例如超时
-                if (e instanceof TimeoutException) {
-                    // 超时事件是 waiting的第三个参数，可以省略，默认下，超时时间为 1分钟
-                    // 这个默认的超时时间可以通过配置 simbot.core.continuousSession.defaultTimeout 进行指定。如果小于等于0，则没有超时，但是不推荐不设置超时。
-                    System.out.println("onError: 超时啦: " + e);
-                    sender.sendGroupMsg(msg, "超时啦");
-                } else {
-                    System.out.println("onError: 出错啦: " + e);
-                    sender.sendGroupMsg(msg, "出错啦");
-                }
-            }).onCancel(e -> {
-                // 这里是第一个会话，此处通过 onCancel 来处理会话被手动关闭、超时关闭的情况的处理，有些时候会与 orError 同时被触发（例如超时的时候）
-                System.out.println("onCancel 关闭啦: " + e);
-            }).build(); // build 构建
-
-            // 这里开始等待第一个会话。
-            sessionContext.waiting(AREA1_GROUP, key, callback);
+                // 这里开始等待第一个会话。
+                sessionContext.waiting(AREA1_GROUP, key, callback);
+            } else {
+                sender.sendGroupMsg(msg, "学习模块没有开启");
+            }
         }else{
-            sender.sendGroupMsg(msg, "学习模块没有开启");
+            sender.sendGroupMsg(msg, "nana学习关键词触发有问题 请输入 nana帮助 查看关键词用法");
         }
-
     }
 
     /**

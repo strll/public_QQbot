@@ -143,12 +143,12 @@ private HashSet<Group_And_Sender> hashset=new HashSet();
                     +"\n 16.nana百度(使用方法示例: nana百度 春节) "
                     +"\n 17.nana查询 使用方法同上(改接口失效请使用百度功能进行搜索)"
                     +"\n 18.nana摸鱼日历"+
-                            "\n 19.nana找番(用法: nana找番+动漫截图)"
+                     "\n 19.nana找番(用法: nana找番+动漫截图)"
                     +"\n 20.nana聊天(nana监听你发送的信息并且做出回复 退出请输入nana退出聊天)"
-                    +"\n 21. nana今天吃什么 随机发送"
-                    +"\n  学习今天吃什么 格式是: 食物信息 食物图片"
-                    +"\n 删除今天吃什么 id  id请输入 查看所有今天吃什么 获取所有id"
-                    +"\n 查看所有今天吃什么 获取所有信息的id"
+                    +"\n 21.nana今天吃什么 随机发送\n"
+                    +"\n  学习今天吃什么 (示例: 学习今天吃什么 泡面 泡面图片)"
+                    +"\n  删除今天吃什么 id  id请输入 查看所有今天吃什么 获取所有id"
+                    +"\n  查看所有今天吃什么 获取所有信息的id"
                     );
             forwardBuilder.add(groupMsg.getBotInfo(),"nana模块管理(管理员使用)");
             forwardBuilder.add(groupMsg.getBotInfo(),"更多功能正在开发中(指刚刚新建好文件夹)");

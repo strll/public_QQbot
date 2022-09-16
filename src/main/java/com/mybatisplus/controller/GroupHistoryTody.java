@@ -32,14 +32,11 @@ public class GroupHistoryTody {
     public void sendNews(GroupMsg msg, Sender sender) throws IOException {
         MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
         String historytody = historyTody.historytody();
-        String finalS = historytody;
-        String replace = finalS.replaceAll("\\\\", "").replaceAll(",", "\n").replace("[", "").replace("]", "").replaceAll("\"","");
 
-        GroupMsg finalGroup =  msg;
         builder.forwardMessage(forwardBuilder -> {
-            String[] split = replace.split(",");
+            String[] split = historytody.split("end");
             for (String s : split) {
-                forwardBuilder.add(finalGroup.getBotInfo(), s);
+                forwardBuilder.add(msg.getBotInfo(), s);
             }
         });
 

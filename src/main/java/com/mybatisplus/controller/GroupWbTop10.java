@@ -28,10 +28,13 @@ public class GroupWbTop10 {
     public void sendNews(GroupMsg msg, MsgSender sender) throws IOException {
         MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
         String wbTop10 = getWbTop10.getWbTop10();
-
+        String[] ends = wbTop10.split("end");
         GroupMsg finalGroup =  msg;
         builder.forwardMessage(forwardBuilder -> {
-            forwardBuilder.add(finalGroup.getBotInfo(), String.valueOf(wbTop10));
+            for (String end : ends) {
+                forwardBuilder.add(finalGroup.getBotInfo(), end);
+            }
+
         });
         final MiraiMessageContent messageContent = builder.build();
 
