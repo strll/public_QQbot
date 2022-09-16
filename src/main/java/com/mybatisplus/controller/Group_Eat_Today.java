@@ -17,24 +17,36 @@ import love.forte.simbot.filter.MatchType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
 
+import static org.apache.commons.lang.math.RandomUtils.nextDouble;
+
 @Controller
+@Transactional
 public class Group_Eat_Today {
     @Autowired
     private TodayEatService todayEatService;
     @Autowired
     private MessageContentBuilderFactory factory;
 
+    private List<Today_Eat> today_eat=null;
+
     @OnGroup
     @Filter(value = "nana今天吃什么", trim = true, matchType = MatchType.CONTAINS)
     @Async
     public void sendeat(GroupMsg msg, Sender sender) throws IOException {
-        Today_Eat today_eat = todayEatService.Send_Today_Eat_Message();
-        String qq = today_eat.getQq();
-        String message = today_eat.getMessage();
+        if(today_eat==null){
+            this.today_eat = todayEatService.Send_Today_Eat_Message();
+        }
+        int size = today_eat.size();
+        double v = nextDouble();
+        double v1 = size * v;
+        Today_Eat today_eat1 = today_eat.get((int) v1);
+        String qq = today_eat1.getQq();
+        String message = today_eat1.getMessage();
         String s="要不试试"+qq+"推荐的:\n"+message;
         sender.sendGroupMsg(msg,s);
     }
@@ -54,11 +66,14 @@ public class Group_Eat_Today {
             }
         }
         String qq = msg.getAccountInfo().getAccountCode();
+        String nickname = msg.getAccountInfo().getAccountNickname();
         eat.setMessage(text+"\n"+s);
-        eat.setQq(qq);
+        eat.setQq(nickname+"("+qq+")");
         int i = todayEatService.Studay_Today_Eat_Message(eat);
         if(i!=0){
             sender.sendGroupMsg(msg,"存储 今天吃什么 成功");
+            this.today_eat=null;
+            this.today_eat = todayEatService.Send_Today_Eat_Message();
         }else{
             sender.sendGroupMsg(msg,"存储 今天吃什么 失败");
         }
@@ -76,6 +91,8 @@ public class Group_Eat_Today {
             sender.sendGroupMsg(msg,"出现错误 请输入 删除今天吃什么 要删除的内容的id");
         }
         if(i!=0){
+            this.today_eat=null;
+            this.today_eat = todayEatService.Send_Today_Eat_Message();
             sender.sendGroupMsg(msg,"删除成功");
         }else {
             sender.sendGroupMsg(msg,"删除失败");
@@ -87,10 +104,13 @@ public class Group_Eat_Today {
     @Async
     public void seleectAlleat(GroupMsg msg, Sender sender) throws IOException {
         MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
-        List<Today_Eat> today_eats = todayEatService.Send_All_message();
+        if(this.today_eat==null){
+            this.today_eat=todayEatService.Send_All_message();
+        }
+        List<Today_Eat> today_eats = this.today_eat;
         builder.forwardMessage(forwardBuilder -> {
             for (Today_Eat today_eat : today_eats) {
-                String s="该条信息的ID是:\n"+today_eat.getId()+"\n信息内容是:\n"+today_eat.getMessage()+"存储人是:\n"+today_eat.getQq();
+                String s="该条信息的ID是: "+today_eat.getId()+"\n信息内容是:\n"+today_eat.getMessage()+"\n存储人是:\n"+today_eat.getQq();
                 forwardBuilder.add(msg.getBotInfo(), s);
             }
         });

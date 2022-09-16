@@ -17,13 +17,10 @@ public class TodayEatServiceImpl extends ServiceImpl<Today_EatMapper, Today_Eat>
     private Today_EatMapper todayEatMapper;
 
     @Override
-    public Today_Eat Send_Today_Eat_Message() {
+    public  List<Today_Eat> Send_Today_Eat_Message() {
         List<Today_Eat> today_eats = todayEatMapper.selectList(null);
-        int size = today_eats.size();
-        double v = nextDouble();
-        double v1 = size * v;
-        Today_Eat today_eat = today_eats.get((int) v1);
-        return today_eat;
+
+        return today_eats;
     }
 
     @Override
