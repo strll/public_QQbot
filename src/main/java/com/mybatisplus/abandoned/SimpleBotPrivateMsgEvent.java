@@ -1,4 +1,4 @@
-package com.mybatisplus.controller;
+package com.mybatisplus.abandoned;
 
 import catcode.CatCodeUtil;
 import catcode.CodeTemplate;
@@ -36,7 +36,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * @author SanJiu
  */
-//@Controller
+
 public class SimpleBotPrivateMsgEvent {
     private static final String AREA1_GROUP = "Area1";
     private static final String AREA2_GROUP = "Area2";

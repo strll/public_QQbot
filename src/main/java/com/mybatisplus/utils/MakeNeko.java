@@ -25,4 +25,8 @@ public class MakeNeko {
     public static String MakeShare (String title,String content, String url){
         return "[CAT:share,title="+title+",content="+content+",url="+url+"]";
     }
+    // nudge
+    public static String Makepoke (String qq){
+        return "[CAT:nudge,code="+qq+"]";
+    }
 }

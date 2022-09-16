@@ -245,6 +245,10 @@ public void sendNews(GroupMsg msg, Sender sender) throws IOException {
         if (send_flag&&hashset.contains(group_and_sender)) {
             String valuemessage = "";
             String text = groupMsg.getText();//获取发生信息
+            if( (int)Math.round(Math.random()*10000)<7 ){
+                //随机复读
+                sender.sendGroupMsg(groupMsg, groupMsg.getMsgContent());
+            }
             if (!text.equals("") && text != null) {
                 Message message = new Message();
                 message.setKeymessage(text);
