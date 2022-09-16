@@ -181,6 +181,8 @@ private HashSet<Group_And_Sender> hashset=new HashSet();
                     +"nana取消群回复\n"
                     +"nana开启聊天模块 \n"
                     +"nana关闭聊天模块\n"
+                    +"nana添加群今天吃什么\n"
+                    +"nana取消群今天吃什么"
             );
         });
 

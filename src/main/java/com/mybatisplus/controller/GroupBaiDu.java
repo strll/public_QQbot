@@ -1,7 +1,7 @@
 package com.mybatisplus.controller;
 
 import com.mybatisplus.utils.GetBaiDu;
-import com.mybatisplus.utils.MakeNekoPicture;
+import com.mybatisplus.utils.MakeNeko;
 import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.MessageContentBuilderFactory;
@@ -43,7 +43,7 @@ public class GroupBaiDu {
         String img = (String) baiDu.get("img");
         if(!img.equals("无"))
         {
-             stringBuffer.append(MakeNekoPicture.MakePicture((String) baiDu.get("img")));
+             stringBuffer.append(MakeNeko.MakePicture((String) baiDu.get("img")));
        }
 
         builder.forwardMessage(forwardBuilder -> {

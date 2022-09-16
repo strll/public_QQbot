@@ -27,7 +27,7 @@ public class GetBaiDu {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("您搜索的是:").append(Msg).append("\n")
                 .append("查询内容是: ").append(info).append("\n")
-                .append(MakeNekoPicture.MakePicture(image)).append("\n")
+                .append(MakeNeko.MakePicture(image)).append("\n")
                 .append("查询的来源是: ").append(url);
 
         return stringBuilder.toString();

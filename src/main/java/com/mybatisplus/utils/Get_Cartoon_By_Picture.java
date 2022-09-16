@@ -25,7 +25,7 @@ public class Get_Cartoon_By_Picture {
         String[] split1 = split[1].split("±");
         String[] split2 = split1[1].split("±");
         StringBuilder stringBuilder = new StringBuilder();
-       stringBuilder.append(MakeNekoPicture.MakePicture(split1[0])).append("\n").append(split2[0]);
+       stringBuilder.append(MakeNeko.MakePicture(split1[0])).append("\n").append(split2[0]);
         return stringBuilder.toString();
     }
 }
