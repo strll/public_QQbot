@@ -97,7 +97,7 @@ private IMessageService service;
 
 //    private HashSet<Group_And_Sender> set=new HashSet();
 //    private Group_And_Sender group_and_sender = null;
-private HashSet<Group_And_Sender> hashset=new HashSet();
+    private HashSet<Group_And_Sender> hashset=new HashSet();
 
     private volatile boolean send_flag=true; //回复模块启动标志
     @Autowired

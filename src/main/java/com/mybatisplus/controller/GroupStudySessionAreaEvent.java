@@ -87,7 +87,7 @@ public class GroupStudySessionAreaEvent {
                 SessionCallback<String> callback = SessionCallback.<String>builder().onResume(text -> {
                     sender.sendGroupMsg(msg, "请继续输入触发关键词之后要返回什么:");
                     sessionContext.waiting(AREA2_GROUP, key, text2 -> {
-                        if (text2.equals("0")) {
+                        if (text2.equals("0")||text2.equals("-1")) {
                             sender.sendGroupMsg(msg, "学习失败");
                         } else {
                             sender.sendGroupMsg(msg, "学习成功");
@@ -158,35 +158,41 @@ public class GroupStudySessionAreaEvent {
         // 通过账号拼接一个此人在此群中的唯一key
         String key = accountCode + "-" + groupCode+"study";
         Message messageget = hashMap.get(key);
-        if (messageget!=null){
-        String text = msg.getText();
-        MessageContent msgContent = msg.getMsgContent();
-        List<Neko> image = msgContent.getCats("image");
-        String url="";
-        if(image.size()!=0){
-            Neko neko = image.get(0);
-            url = neko.get("url");
-            messageget.setUrl(url);
-        }
-        if(url.equals("")){
-            try{
-                String value = text;
-                messageget.setValuemessage(value);
-            }catch(ArrayIndexOutOfBoundsException e){
-                if(messageget.getValuemessage().equals("")&& messageget.getUrl().equals("")){
-                    session.push(AREA2_GROUP, key, "0");
-                    messageget =null;
+        if(messageget.getKeymessage().equals("")&&messageget.getKeymessage()==null){
+            hashMap.remove(key);
+            session.push(AREA2_GROUP, key, -1);
+        }else {
+
+            if (messageget != null) {
+                String text = msg.getText();
+                MessageContent msgContent = msg.getMsgContent();
+                List<Neko> image = msgContent.getCats("image");
+                String url = "";
+                if (image.size() != 0) {
+                    Neko neko = image.get(0);
+                    url = neko.get("url");
+                    messageget.setUrl(url);
                 }
+                if (url.equals("")) {
+                    try {
+                        String value = text;
+                        messageget.setValuemessage(value);
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        if (messageget.getValuemessage().equals("") && messageget.getUrl().equals("")) {
+                            session.push(AREA2_GROUP, key, "0");
+                            messageget = null;
+                        }
+                    }
+                }
+                assert messageget != null;
+                assert !messageget.getKeymessage().equals("");
+                messageget.setValuemessage(text);
+                messageget.setQq(accountCode);
+                assert !messageget.getValuemessage().equals("");
+                int study = service.InsertMessage(messageget);
+                session.push(AREA2_GROUP, key, study);
+                hashMap.remove(key);
             }
-        }
-        assert messageget != null;
-        assert !messageget.getKeymessage().equals("");
-       messageget.setValuemessage(text);
-        messageget.setQq(accountCode);
-        assert !messageget.getValuemessage().equals("");
-        int study = service.InsertMessage(messageget);
-        session.push(AREA2_GROUP, key, study);
-        hashMap.remove(key);
         }
     }
 
