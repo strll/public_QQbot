@@ -19,7 +19,7 @@ public class GruopFriendChangeEvent {
         sender.SENDER.sendGroupMsg(groupMemberIncrease, "欢迎进群:"+"[CAT:at,code="+accountCode+"]"+"("+accountCode+")"+"\n 我是本群机器人nana 输入nana帮助可以看到我的功能");
            }
 
-   // @OnGroupMemberReduce
+    @OnGroupMemberReduce
     public void groupFriendReduceEvent(GroupMemberReduce roupMemberReduce , MsgSender sender){
 
         String accountNickname = roupMemberReduce.getBeOperatorInfo().getAccountNickname();
