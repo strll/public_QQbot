@@ -24,7 +24,7 @@ public class GruopFriendChangeEvent {
 
         String accountNickname = roupMemberReduce.getBeOperatorInfo().getAccountNickname();
         String accountCode = roupMemberReduce.getBeOperatorInfo().getAccountCode();
-        sender.SENDER.sendGroupMsg(roupMemberReduce,"emmm.. \n"+accountNickname+"(QQ号是"+ accountCode+")"+"离开了我们 \n ");
+        sender.SENDER.sendGroupMsg(roupMemberReduce,accountNickname+"("+ accountCode+")"+"永远离开了我们... ");
     }
 
 }

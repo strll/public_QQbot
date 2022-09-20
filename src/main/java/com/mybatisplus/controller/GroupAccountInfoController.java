@@ -149,6 +149,7 @@ private IMessageService service;
                     +"\n  学习今天吃什么 (示例: 学习今天吃什么 泡面 泡面图片)"
                     +"\n  删除今天吃什么 id  id请输入 查看所有今天吃什么 获取所有id"
                     +"\n  查看所有今天吃什么 获取所有信息的id"
+                    +"\n  查看今天吃什么 可获取指定内容的id (示例: 查看今天吃什么 泡面)"
                     );
             forwardBuilder.add(groupMsg.getBotInfo(),"nana模块管理(管理员使用)");
             forwardBuilder.add(groupMsg.getBotInfo(),"更多功能正在开发中(指刚刚新建好文件夹)");
