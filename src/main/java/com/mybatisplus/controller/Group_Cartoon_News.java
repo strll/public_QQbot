@@ -30,7 +30,7 @@ public class Group_Cartoon_News {
         MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
         builder.forwardMessage(forwardBuilder -> {
             for (String end :ends) {
-                 forwardBuilder.add(msg.getBotInfo(), end);
+                forwardBuilder.add(msg.getBotInfo(),  end);
             }
         });
         final MiraiMessageContent messageContent = builder.build();

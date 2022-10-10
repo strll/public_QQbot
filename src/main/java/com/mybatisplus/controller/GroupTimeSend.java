@@ -5,6 +5,7 @@ import com.mybatisplus.service.IAdminService;
 
 import com.mybatisplus.utils.GetMoYu;
 import com.mybatisplus.utils.GetNews;
+import com.mybatisplus.utils.Get_Cartoon_News;
 import com.mybatisplus.utils.HistoryTody;
 import love.forte.simbot.annotation.Async;
 import love.forte.simbot.annotation.Filter;
@@ -26,6 +27,8 @@ import java.util.HashSet;
 
 @Controller
 public class GroupTimeSend {
+    @Autowired
+    private Get_Cartoon_News cartoon_news;
     private HashSet<Group_And_Sender> hashset=new HashSet();
     @Autowired
     private IAdminService adminService;
@@ -103,19 +106,19 @@ public class GroupTimeSend {
         }
     }
 
-    @Scheduled(cron="0 30 7 * * *")
-    public void send_morning(){
-        if(ds_flag) {
-           GroupMsg group = null;
-            Sender sender = null;
-            for (Group_And_Sender group_and_sender : hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group, "早上起来 拥抱太阳! 今天大家也要好好吃饭 ");
-                sender.sendGroupMsg(group, "生活是美好的 希望大家都能照顾好自己");
-            }
-        }
-    }
+//    @Scheduled(cron="0 30 7 * * *")
+//    public void send_morning(){
+//        if(ds_flag) {
+//           GroupMsg group = null;
+//            Sender sender = null;
+//            for (Group_And_Sender group_and_sender : hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group, "早上起来 拥抱太阳! 今天大家也要好好吃饭 ");
+//                sender.sendGroupMsg(group, "生活是美好的 希望大家都能照顾好自己");
+//            }
+//        }
+//    }
 
 //    @Scheduled(cron="0 30 9 * * *")
 //    public void tg(){
@@ -158,81 +161,81 @@ public class GroupTimeSend {
 //        }
 //    }
 
-    @Scheduled(cron="0 0 18 ? * FRI")
-    public void sb2(){
-        if(ds_flag) {
-            GroupMsg group = null;
-            Sender sender = null;
-
-            for (Group_And_Sender group_and_sender :  hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group, "周五下班了 这一周工作辛苦了 周末就好好放松一下吧");
-            }
-        }
-    }
-
-
-    @Scheduled(cron="0 0 18 ? * MON-FRI")
-    public void xb(){
-        if(ds_flag) {
-            GroupMsg group = null;
-            Sender sender = null;
-
-            for (Group_And_Sender group_and_sender :  hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group, "下班啦下班了 今天也好好的犒劳一下自己吧");
-            }
-        }
-    }
-
-
-    @Scheduled(cron="0 0 15 * * *")
-    public void tg2(){
-        if(ds_flag) {
-            GroupMsg group = null;
-            Sender sender = null;
-
-            for (Group_And_Sender group_and_sender :  hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group, "希望大家不要久坐 多从位置上起来走走");
-            }
-        }
-    }
-
-    //{ 秒数} {分钟} {小时} {日期} {月份} {星期}
-    @Scheduled(cron="0 30 19 * * * ")
-    public void send_evening(){
-        if(ds_flag) {
-            GroupMsg group = null;
-            Sender sender = null;
-
-            for (Group_And_Sender group_and_sender :  hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group, "晚上好 今天晚上也要好好吃饭");
-                sender.sendGroupMsg(group, "生活是美好的 希望大家都能照顾好自己");
-            }
-        }
-    }
-
-    @Scheduled(cron="0 0 12 * * * ")
-    public void send_afternoon(){
-        if(ds_flag){
-            GroupMsg group=null;
-            Sender sender =null;
-
-            for (Group_And_Sender group_and_sender : hashset) {
-                group = group_and_sender.getGroup();
-                sender = group_and_sender.getSender();
-                sender.sendGroupMsg(group,"中午好 中午记得要午休哦");
-                sender.sendGroupMsg(group,"生活是美好的 希望大家都能照顾好自己");
-            }
-        }
-
-    }
+//    @Scheduled(cron="0 0 18 ? * FRI")
+//    public void sb2(){
+//        if(ds_flag) {
+//            GroupMsg group = null;
+//            Sender sender = null;
+//
+//            for (Group_And_Sender group_and_sender :  hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group, "周五下班了 这一周工作辛苦了 周末就好好放松一下吧");
+//            }
+//        }
+//    }
+//
+//
+//    @Scheduled(cron="0 0 18 ? * MON-FRI")
+//    public void xb(){
+//        if(ds_flag) {
+//            GroupMsg group = null;
+//            Sender sender = null;
+//
+//            for (Group_And_Sender group_and_sender :  hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group, "下班啦下班了 今天也好好的犒劳一下自己吧");
+//            }
+//        }
+//    }
+//
+//
+//    @Scheduled(cron="0 0 15 * * *")
+//    public void tg2(){
+//        if(ds_flag) {
+//            GroupMsg group = null;
+//            Sender sender = null;
+//
+//            for (Group_And_Sender group_and_sender :  hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group, "希望大家不要久坐 多从位置上起来走走");
+//            }
+//        }
+//    }
+//
+//    //{ 秒数} {分钟} {小时} {日期} {月份} {星期}
+//    @Scheduled(cron="0 30 19 * * * ")
+//    public void send_evening(){
+//        if(ds_flag) {
+//            GroupMsg group = null;
+//            Sender sender = null;
+//
+//            for (Group_And_Sender group_and_sender :  hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group, "晚上好 今天晚上也要好好吃饭");
+//                sender.sendGroupMsg(group, "生活是美好的 希望大家都能照顾好自己");
+//            }
+//        }
+//    }
+//
+//    @Scheduled(cron="0 0 12 * * * ")
+//    public void send_afternoon(){
+//        if(ds_flag){
+//            GroupMsg group=null;
+//            Sender sender =null;
+//
+//            for (Group_And_Sender group_and_sender : hashset) {
+//                group = group_and_sender.getGroup();
+//                sender = group_and_sender.getSender();
+//                sender.sendGroupMsg(group,"中午好 中午记得要午休哦");
+//                sender.sendGroupMsg(group,"生活是美好的 希望大家都能照顾好自己");
+//            }
+//        }
+//
+//    }
 //==============
 
     @Autowired
@@ -265,7 +268,6 @@ public class GroupTimeSend {
         if(ds_flag) {
             GroupMsg group = null;
             Sender sender = null;
-
             for (Group_And_Sender group_and_sender :  hashset) {
                 group = group_and_sender.getGroup();
                 sender = group_and_sender.getSender();
@@ -277,7 +279,7 @@ public class GroupTimeSend {
 
     @Autowired
     private GetNews getNews;
-    @Scheduled(cron="0 0 8 * * * ")
+    @Scheduled(cron="0 31 7 * * * ")
     public void sendNews() throws IOException {
         if(ds_flag) {
             MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
@@ -295,6 +297,32 @@ public class GroupTimeSend {
                 });
                 MiraiMessageContent build = builder.build();
                 sender.sendGroupMsg(group, build );
+
+
+            }
+        }
+    }
+
+
+    @Scheduled(cron="0 32 7 * * 7 ")
+    public void sendNews1() throws IOException {
+        if(ds_flag) {
+            String news = cartoon_news.getNews();
+            String[] ends = news.split("end");
+            MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
+            for (Group_And_Sender group_and_sender :  hashset) {
+                GroupMsg group = group_and_sender.getGroup();
+                Sender sender = group_and_sender.getSender();
+                sender.sendGroupMsg(group, "早上好 这是本周的动漫资讯");
+                GroupMsg finalGroup =  group_and_sender.getGroup();
+                builder.forwardMessage(forwardBuilder -> {
+                    for (String end :ends) {
+                        forwardBuilder.add(finalGroup.getBotInfo(),  end);
+                    }
+                });
+                MiraiMessageContent build = builder.build();
+                sender.sendGroupMsg(group, build );
+
 
             }
         }

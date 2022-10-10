@@ -32,10 +32,12 @@ import static org.apache.commons.lang.math.RandomUtils.nextDouble;
 @Controller
 @Transactional
 public class Group_Eat_Today {
-    @Autowired
-    private TodayEatService todayEatService;
+
     @Autowired
     private MessageContentBuilderFactory factory;
+    @Autowired
+    private TodayEatService todayEatService;
+
     private HashSet<Group_And_Sender> hashset=new HashSet();
     private List<Today_Eat> today_eat=null;
     @Autowired
@@ -143,6 +145,29 @@ public class Group_Eat_Today {
             }
         }
     }
+
+
+
+    @OnGroup
+    @Filter(value = "查询今天吃什么", trim = true, matchType = MatchType.CONTAINS)
+    @Async
+    public void selecteat(GroupMsg msg, Sender sender) throws IOException {
+        String text = msg.getText().substring(8);
+        List<Today_Eat> list  =todayEatService.selectMsg(text);
+
+        MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
+        builder.forwardMessage(forwardBuilder -> {
+            for (Today_Eat end :list) {
+                String s="该条信息的ID是: "+end.getId()+"\n信息内容是:\n"+end.getMessage()+"\n存储人是:\n"+end.getQq();
+                forwardBuilder.add(msg.getBotInfo(), s);
+            }
+        });
+        final MiraiMessageContent messageContent = builder.build();
+        sender.sendGroupMsg(msg,"若要删除某个信息请输入: 删除今天吃什么 id");
+        sender.sendGroupMsg(msg,messageContent);
+    }
+
+
     @OnGroup
     @Filter(value = "删除今天吃什么", trim = true, matchType = MatchType.CONTAINS)
     @Async
@@ -151,7 +176,7 @@ public class Group_Eat_Today {
         group_and_sender.setSender(sender);
         group_and_sender.setGroup(msg);
         if (hashset.contains(group_and_sender)) {
-            String text = msg.getText().substring(8);
+            String text = msg.getText().substring(9);
             int i = 0;
             try {
                 i = todayEatService.Delete_Today_Eat_Message(Integer.parseInt(text));
@@ -169,72 +194,89 @@ public class Group_Eat_Today {
             sender.sendGroupMsg(msg,"管理员未开启该功能");
         }
     }
-    @OnGroup
-    @Filter(value = "查看所有今天吃什么", trim = true, matchType = MatchType.CONTAINS)
-    @Async
-    public void seleectAlleat(GroupMsg msg, Sender sender) throws IOException {
-        Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
-        group_and_sender.setSender(sender);
-        group_and_sender.setGroup(msg);
-        if (hashset.contains(group_and_sender)) {
-        MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
-        if(this.today_eat==null){
-            this.today_eat=todayEatService.Send_All_message();
-        }
-        List<Today_Eat> today_eats = this.today_eat;
-        builder.forwardMessage(forwardBuilder -> {
-            for (Today_Eat today_eat : today_eats) {
-                String s="该条信息的ID是: "+today_eat.getId()+"\n信息内容是:\n"+today_eat.getMessage()+"\n存储人是:\n"+today_eat.getQq();
-                forwardBuilder.add(msg.getBotInfo(), s);
-            }
-        });
-        final MiraiMessageContent messageContent = builder.build();
-        sender.sendGroupMsg(msg,messageContent);
-    }
-        else{
-            sender.sendGroupMsg(msg,"管理员未开启该功能");
-        }
-    }
+//    @OnGroup
+//    @Filter(value = "查看所有今天吃什么", trim = true, matchType = MatchType.CONTAINS)
+//    @Async
+//    public void seleectAlleat(GroupMsg msg, Sender sender) throws IOException {
+//        Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
+//        group_and_sender.setSender(sender);
+//        group_and_sender.setGroup(msg);
+//        if (hashset.contains(group_and_sender)) {
+//        MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
+//        if(this.today_eat==null){
+//            this.today_eat=todayEatService.Send_All_message();
+//        }
+//        List<Today_Eat> today_eats = this.today_eat;
+//        if(today_eat.size()>1) {
+//
+//            for (int i = 0; i < today_eat.size(); i++) {
+//                int j=0;
+//                builder.forwardMessage(forwardBuilder -> {
+//                    for (Today_Eat today_eat : today_eats) {
+//                        String s="该条信息的ID是: "+today_eat.getId()+"\n信息内容是:\n"+today_eat.getMessage()+"\n存储人是:\n"+today_eat.getQq();
+//                        forwardBuilder.add(msg.getBotInfo(), s);
+//                    }
+//                });
+//                j++;
+//                if(j>=20){
+//                    final MiraiMessageContent messageContent = builder.build();
+//                    sender.sendGroupMsg(msg,messageContent);
+//                    j=0;
+//                }
+//                if(today_eat.size()-j<20){
+//
+//                }
+//
+//            }
+//
+//        }
+//
+//
+//    }
+//        else{
+//            sender.sendGroupMsg(msg,"管理员未开启该功能");
+//        }
+//    }
+//
 
 
-
-    @OnGroup
-    @Filter(value = "查看今天吃什么", trim = true, matchType = MatchType.CONTAINS)
-    @Async
-    public void seleecteat(GroupMsg msg, Sender sender) throws IOException {
-        Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
-        group_and_sender.setSender(sender);
-        group_and_sender.setGroup(msg);
-        if (hashset.contains(group_and_sender)) {
-            String text = msg.getText();
-
-            MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
-            if (this.today_eat == null) {
-                this.today_eat = todayEatService.Send_All_message();
-            }
-            List<Today_Eat> today_eats = this.today_eat;
-            List<Today_Eat> today_eats_re=new ArrayList<>();
-
-            for (Today_Eat todayEat : today_eats) {
-
-                if(todayEat.getMessage().contains(text)){
-                    today_eats_re.add(todayEat);
-                }
-
-            }
-
-            builder.forwardMessage(forwardBuilder -> {
-                for (Today_Eat today_eat : today_eats_re) {
-                    String s = "该条信息的ID是: " + today_eat.getId() + "\n信息内容是:\n" + today_eat.getMessage() + "\n存储人是:\n" + today_eat.getQq();
-                    forwardBuilder.add(msg.getBotInfo(), s);
-                }
-            });
-            final MiraiMessageContent messageContent = builder.build();
-            sender.sendGroupMsg(msg, messageContent);
-        } else {
-            sender.sendGroupMsg(msg, "管理员未开启该功能");
-        }
-    }
+//    @OnGroup
+//    @Filter(value = "查看今天吃什么", trim = true, matchType = MatchType.CONTAINS)
+//    @Async
+//    public void seleecteat(GroupMsg msg, Sender sender) throws IOException {
+//        Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
+//        group_and_sender.setSender(sender);
+//        group_and_sender.setGroup(msg);
+//        if (hashset.contains(group_and_sender)) {
+//            String text = msg.getText();
+//
+//            MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
+//            if (this.today_eat == null) {
+//                this.today_eat = todayEatService.Send_All_message();
+//            }
+//            List<Today_Eat> today_eats = this.today_eat;
+//            List<Today_Eat> today_eats_re=new ArrayList<>();
+//
+//            for (Today_Eat todayEat : today_eats) {
+//
+//                if(todayEat.getMessage().contains(text)){
+//                    today_eats_re.add(todayEat);
+//                }
+//
+//            }
+//
+//            builder.forwardMessage(forwardBuilder -> {
+//                for (Today_Eat today_eat : today_eats_re) {
+//                    String s = "该条信息的ID是: " + today_eat.getId() + "\n信息内容是:\n" + today_eat.getMessage() + "\n存储人是:\n" + today_eat.getQq();
+//                    forwardBuilder.add(msg.getBotInfo(), s);
+//                }
+//            });
+//            final MiraiMessageContent messageContent = builder.build();
+//            sender.sendGroupMsg(msg, messageContent);
+//        } else {
+//            sender.sendGroupMsg(msg, "管理员未开启该功能");
+//        }
+//    }
 
 
 }

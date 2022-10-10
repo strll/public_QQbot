@@ -1,5 +1,6 @@
 package com.mybatisplus.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mybatisplus.entity.Today_Eat;
 import com.mybatisplus.mapper.Today_EatMapper;
@@ -37,6 +38,14 @@ public class TodayEatServiceImpl extends ServiceImpl<Today_EatMapper, Today_Eat>
     @Override
     public List<Today_Eat> Send_All_message() {
         List<Today_Eat> today_eats = todayEatMapper.selectList(null);
+        return today_eats;
+    }
+
+    @Override
+    public List<Today_Eat> selectMsg(String text) {
+        QueryWrapper<Today_Eat> today_eatQueryWrapper = new QueryWrapper<>();
+        today_eatQueryWrapper.like("message",text);
+        List<Today_Eat> today_eats = todayEatMapper.selectList(today_eatQueryWrapper);
         return today_eats;
     }
 

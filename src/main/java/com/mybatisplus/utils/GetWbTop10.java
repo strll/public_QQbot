@@ -41,8 +41,6 @@ public class GetWbTop10 {
                     .append("热搜标签:").append(hottag)
                     .append("end");
         }
-
-
         return String.valueOf(sb);
     }
 }

@@ -88,15 +88,10 @@ import java.util.concurrent.ConcurrentHashMap;
  *     }
  */
 @Controller
-
 public class GroupAccountInfoController {
     @Autowired
 private IMessageService service;
 
-
-
-//    private HashSet<Group_And_Sender> set=new HashSet();
-//    private Group_And_Sender group_and_sender = null;
     private HashSet<Group_And_Sender> hashset=new HashSet();
 
     private volatile boolean send_flag=true; //回复模块启动标志
@@ -148,8 +143,9 @@ private IMessageService service;
                     +"\n 21.nana今天吃什么 随机发送\n"
                     +"\n  学习今天吃什么 (示例: 学习今天吃什么 泡面 泡面图片)"
                     +"\n  删除今天吃什么 id  id请输入 查看所有今天吃什么 获取所有id"
-                    +"\n  查看所有今天吃什么 获取所有信息的id"
-                    +"\n  查看今天吃什么 可获取指定内容的id (示例: 查看今天吃什么 泡面)"
+                    +"\n  查询今天吃什么空格+关键词 可通过模糊查询获取内容的所有信息 可通过id进行删除"
+                    +"\n 22.nana动漫资讯"
+                    +"\n 23.nana小鸡词典 (示例: nana小鸡词典 盐系)"
                     );
             forwardBuilder.add(groupMsg.getBotInfo(),"nana模块管理(管理员使用)");
             forwardBuilder.add(groupMsg.getBotInfo(),"更多功能正在开发中(指刚刚新建好文件夹)");

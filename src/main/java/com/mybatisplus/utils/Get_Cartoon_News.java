@@ -22,15 +22,17 @@ public class Get_Cartoon_News {
         JSONObject parse = JSONObject.parseObject(body);
         JSONArray newslist = parse.getJSONArray("newslist");
         StringBuffer stringBuffer = new StringBuffer();
+        //newslist.size()
         for (int i = 0; i < newslist.size(); i++) {
             JSONObject o =(JSONObject) newslist.get(i);
             stringBuffer.append("时间: ").append(o.getString("ctime")).append("\n")
                     .append("新闻标题: ").append( o.getString("title")).append("\n")
                     .append("新闻内容:\n").append(o.getString("description")).append("\n")
                     .append("新闻来源:").append(o.getString("source")).append("\n")
-                    .append(MakeNeko.MakePicture(o.getString("picUrl"))).append("\n")
                     .append("新闻详情:").append(o.getString("url")).append("\n")
-                    .append("end");
+               //     .append(MakeNeko.MakePicture(o.getString("picUrl")))
+                   .append("end")
+            ;
         }
         return  stringBuffer.toString();
     }

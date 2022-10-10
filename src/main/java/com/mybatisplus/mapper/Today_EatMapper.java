@@ -5,4 +5,5 @@ import com.mybatisplus.entity.Today_Eat;
 
 
 public interface Today_EatMapper extends BaseMapper<Today_Eat> {
+
 }
