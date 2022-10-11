@@ -12,6 +12,7 @@ import java.io.IOException;
 public class Get_Chick_Dictionary {
     public String Get_Chick (String string) throws IOException {
         String URL = "https://jikipedia.com/search?phrase="+string;
+        StringBuilder stringBuilder = new StringBuilder();
         Document document = null;
 
             document = Jsoup.connect(URL)
@@ -22,18 +23,21 @@ public class Get_Chick_Dictionary {
                     .get();
 
         Elements select = document.select("#__layout > div:nth-child(1) .search #search .feed-container .card-middle.cursor.card-middle-instance-");
-        Element element = select.get(1);
+        Element element = select.get(0);
         Element child = element.child(1);
         String href = child.attr("href");
         // https://jikipedia.com/definition/299871941
         Document document1 = Jsoup.connect(href).get();
         Elements select1 =   document1.select("#__layout .master > .main .definition .section.card-middle .content .brax-render.render ");
-        //   Elements select1 = document.select("#__layout");
-        StringBuilder stringBuilder = new StringBuilder();
+        String text = document1.select("#__layout .master .main .title.pre").get(0).text();
+
+
+        stringBuilder.append("小鸡词典的最佳匹配是: "+text+"\n");
         for (Element element1 : select1) {
             String replace =  element1.text().replace("‌‌", "");
             stringBuilder.append(replace);
         }
+        stringBuilder.append("\n本则信息来源:"+href);
         return stringBuilder.toString();
     }
 }
