@@ -4,14 +4,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 @Component
 public class Get_Chick_Dictionary {
-    public String Get_Chick (String string) throws IOException, JSONException {
+    public String Get_Chick (String string) throws IOException {
         String URL = "https://jikipedia.com/search?phrase="+string;
         Document document = null;
 

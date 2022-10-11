@@ -12,6 +12,7 @@ import com.mybatisplus.listener.MyNewGroupMemberListen;
 import com.mybatisplus.service.IAdminService;
 import com.mybatisplus.service.IMessageService;
 
+import com.mybatisplus.service.impl.MessageServiceImpl;
 import com.mybatisplus.utils.Random_say;
 import love.forte.simbot.annotation.*;
 import love.forte.simbot.api.message.MessageContent;
@@ -146,6 +147,7 @@ private IMessageService service;
                     +"\n  查询今天吃什么空格+关键词 可通过模糊查询获取内容的所有信息 可通过id进行删除"
                     +"\n 22.nana动漫资讯"
                     +"\n 23.nana小鸡词典 (示例: nana小鸡词典 盐系)"
+                    +"\n 24.nana刷新"
                     );
             forwardBuilder.add(groupMsg.getBotInfo(),"nana模块管理(管理员使用)");
             forwardBuilder.add(groupMsg.getBotInfo(),"更多功能正在开发中(指刚刚新建好文件夹)");
@@ -154,6 +156,16 @@ private IMessageService service;
         final MiraiMessageContent messageContent = builder.build();
         // 发送消息
         sender.sendGroupMsg(groupMsg, messageContent);
+    }
+
+@Autowired
+private MessageServiceImpl messageServiceImpl;
+    @Async
+    @OnGroup
+    @Filter(value="nana刷新",trim=true,matchType = MatchType.CONTAINS)
+    public void help1(GroupMsg groupMsg, Sender sender) {
+        int i = messageServiceImpl.Delete_Null_Message();
+        sender.sendGroupMsg(groupMsg, "已刷新 删除无效数据:"+i+"条");
     }
 
     @OnGroup
@@ -241,7 +253,7 @@ public void sendNews(GroupMsg msg, Sender sender) throws IOException {
 
         if (send_flag&&hashset.contains(group_and_sender)) {
             String valuemessage = "";
-            String text = groupMsg.getText();//获取发生信息
+            String text = groupMsg.getMsg();//获取发生信息
             if( (int)Math.round(Math.random()*10000)<7 ){
                 //随机复读
                 sender.sendGroupMsg(groupMsg, groupMsg.getMsgContent());
@@ -329,10 +341,21 @@ public void sendNews(GroupMsg msg, Sender sender) throws IOException {
     @OnGroup
     @Filter(value="nana骰子",trim=true,matchType = MatchType.CONTAINS)
     public void tz(GroupMsg groupMsg, Sender sender) {
+
+        String text = groupMsg.getText();
         String accountCode = groupMsg.getAccountInfo().getAccountCode();
-        sender.sendGroupMsg(groupMsg, groupMsg.getAccountInfo().getAccountNickname()+"您的骰子是");
-        sender.sendGroupMsg(groupMsg,"[CAT:at,code="+accountCode+"]"+"[CAT:dice,random=true]");
+        if (text.length()<=6){
+
+            sender.sendGroupMsg(groupMsg, groupMsg.getAccountInfo().getAccountNickname()+"您的骰子是");
+            sender.sendGroupMsg(groupMsg,"[CAT:at,code="+accountCode+"]"+"[CAT:dice,random=true]");
+        }else{
+            String replace = text.substring(6).replace(" ", "");
+            sender.sendGroupMsg(groupMsg, groupMsg.getAccountInfo().getAccountNickname()+"您的骰子是");
+            sender.sendGroupMsg(groupMsg,"[CAT:at,code="+accountCode+"]"+"[CAT:dice,random="+replace+"]");
+
         }
+
+            }
 
     //==========================================================================
 

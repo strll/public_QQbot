@@ -83,4 +83,9 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     public List<Message> Get_Message_by_QQ_And_key(String qq, String key) {
         return mapper.Get_Message_by_QQ_And_key( qq,  key);
     }
+
+    @Override
+    public int Delete_Null_Message() {
+        return mapper.DeleteNullMessage();
+    }
 }

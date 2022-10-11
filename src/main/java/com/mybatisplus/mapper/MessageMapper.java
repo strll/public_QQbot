@@ -29,4 +29,5 @@ public interface MessageMapper extends BaseMapper<Message> {
  List<Message> Get_Message_by_QQ_And_key(@Param("qq")String qq,@Param("key") String key);
 
  int DeleteMessage_By_QQ(@Param("key")String text, @Param("qq")String qq);
+ int DeleteNullMessage();
 }

@@ -32,7 +32,7 @@ public class GroupStudySessionAreaEvent {
     private IMessageService service;
     Message message = null;
     HashMap<String,Message> hashMap=new HashMap<String,Message>();
-    private volatile boolean Study_flag=true; //学习模块启动标志
+    private volatile boolean Study_flag=false; //学习模块启动标志
     @Autowired
     private IAdminService adminService;
 
@@ -135,7 +135,7 @@ public class GroupStudySessionAreaEvent {
         String groupCode = msg.getGroupInfo().getGroupCode();
         // 通过账号拼接一个此人在此群中的唯一key
         String key = accountCode + "-" + groupCode+"study";
-        String text = msg.getText();
+        String text = msg.getMsg();
         message = new  Message();
         message.setKeymessage(text);
         hashMap.put(key,message);
@@ -164,7 +164,7 @@ public class GroupStudySessionAreaEvent {
         }else {
 
             if (messageget != null) {
-                String text = msg.getText();
+                String text = msg.getMsg();
                 MessageContent msgContent = msg.getMsgContent();
                 List<Neko> image = msgContent.getCats("image");
                 String url = "";

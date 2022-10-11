@@ -136,7 +136,7 @@ public class GroupDeleteSessionAreaEvent {
         String key = accountCode + "-" + groupCode;
 
 
-        String text = msg.getText();
+        String text = msg.getMsg();
 
         Message message1 = hashMap.get(key);
         if(message1!=null){

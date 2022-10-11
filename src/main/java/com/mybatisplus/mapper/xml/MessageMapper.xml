@@ -15,6 +15,9 @@
     <delete id="DeleteMessage_By_QQ">
         delete from message where keymessage=#{key} and qq=#{qq};
     </delete>
+    <delete id="DeleteNullMessage">
+        delete from message where keymessage   ="";
+    </delete>
 
     <select id="selectall" resultType="com.mybatisplus.entity.Message">
         select * from message;

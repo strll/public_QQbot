@@ -24,5 +24,5 @@ public interface IMessageService extends IService<Message> {
         public List<Message> Get_Key_by_Url(Message message);
         public  List<String> Get_QQ_by_key(String key );
         public List<Message> Get_Message_by_QQ_And_key(String qq,String key);
-
+        public int Delete_Null_Message();
 }
