@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +17,11 @@ import java.util.Set;
 
 @Service
 public class GetWeather {
+    @Value("${key}")
+    String key;
 
     public HashMap<Integer,HashMap<String, String>> getBetterWeather(String city) throws IOException {
-        Connection.Response execute = Jsoup.connect("https://geoapi.qweather.com/v2/city/lookup?&key=e0757a5474934a88ae69a2e8f2746a83&location="+city)
+        Connection.Response execute = Jsoup.connect("https://geoapi.qweather.com/v2/city/lookup?&key="+key+"&location="+city)
                 .postDataCharset("UTF-8")
                 .ignoreContentType(true)
                 .execute();

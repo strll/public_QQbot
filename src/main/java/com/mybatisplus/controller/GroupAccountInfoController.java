@@ -13,6 +13,7 @@ import com.mybatisplus.service.IAdminService;
 import com.mybatisplus.service.IMessageService;
 
 import com.mybatisplus.service.impl.MessageServiceImpl;
+import com.mybatisplus.utils.Get_LOVE;
 import com.mybatisplus.utils.Random_say;
 import love.forte.simbot.annotation.*;
 import love.forte.simbot.api.message.MessageContent;
@@ -243,7 +244,8 @@ public void sendNews(GroupMsg msg, Sender sender) throws IOException {
         }
     }
 //====================================================
-
+@Autowired
+private Get_LOVE love;
     @Async
     @OnGroup
     public void onGroupMsg(GroupMsg groupMsg,Sender sender) throws IOException {
@@ -258,6 +260,11 @@ public void sendNews(GroupMsg msg, Sender sender) throws IOException {
                 //随机复读
                 sender.sendGroupMsg(groupMsg, groupMsg.getMsgContent());
             }
+            String q="[CAT:at,code="+groupMsg.getBotInfo().getBotCode()+"]";
+            if(text.equals(q)){
+                sender.sendGroupMsg(groupMsg,love.getQinghua());
+            }
+
             if (!text.equals("") && text != null) {
                 Message message = new Message();
                 message.setKeymessage(text);
@@ -347,11 +354,17 @@ public void sendNews(GroupMsg msg, Sender sender) throws IOException {
         if (text.length()<=6){
 
             sender.sendGroupMsg(groupMsg, groupMsg.getAccountInfo().getAccountNickname()+"您的骰子是");
-            sender.sendGroupMsg(groupMsg,"[CAT:at,code="+accountCode+"]"+"[CAT:dice,random=true]");
+            sender.sendGroupMsg(groupMsg,"[CAT:at,code="+accountCode+"] "+"[CAT:dice,random=true]");
         }else{
             String replace = text.substring(6).replace(" ", "");
-            sender.sendGroupMsg(groupMsg, groupMsg.getAccountInfo().getAccountNickname()+"您的骰子是");
-            sender.sendGroupMsg(groupMsg,"[CAT:at,code="+accountCode+"]"+"[CAT:dice,random="+replace+"]");
+            int i = Integer.parseInt(replace);
+            if (i>0&&i<7){
+                sender.sendGroupMsg(groupMsg,  groupMsg.getAccountInfo().getAccountNickname()+"您的骰子是");
+                sender.sendGroupMsg(groupMsg,  "[CAT:nudge,target="+groupMsg.getAccountInfo().getAccountCode()+"]");
+                        sender.sendGroupMsg(groupMsg, "[CAT:dice,value="+replace+"]");
+            }else{
+                sender.sendGroupMsg(groupMsg, groupMsg.getAccountInfo().getAccountNickname()+"骰子大小应该是1到6");
+            }
 
         }
 

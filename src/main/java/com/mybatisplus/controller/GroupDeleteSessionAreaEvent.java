@@ -74,10 +74,7 @@ public class GroupDeleteSessionAreaEvent {
     @ListenBreak
     public void testConversationDomain(GroupMsg msg, ListenerContext context, Sender sender) {
 
-
         if(  Delete_flag ) {
-
-
             ContinuousSessionScopeContext sessionContext = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
             assert sessionContext != null;
 
@@ -129,13 +126,10 @@ public class GroupDeleteSessionAreaEvent {
         // 得到session上下文。
         ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
-
         String accountCode = msg.getAccountInfo().getAccountCode();
         String groupCode = msg.getGroupInfo().getGroupCode();
         // 通过账号拼接一个此人在此群中的唯一key
         String key = accountCode + "-" + groupCode;
-
-
         String text = msg.getMsg();
 
         Message message1 = hashMap.get(key);

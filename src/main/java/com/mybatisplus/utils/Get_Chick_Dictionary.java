@@ -37,7 +37,11 @@ public class Get_Chick_Dictionary {
             String replace =  element1.text().replace("‌‌", "");
             stringBuilder.append(replace);
         }
+
+
         stringBuilder.append("\n本则信息来源:"+href);
         return stringBuilder.toString();
+
+
     }
 }
