@@ -184,7 +184,7 @@
         <dependency>
             <groupId>love.forte.simple-robot</groupId>
             <artifactId>component-mirai-spring-boot-starter</artifactId>
-            <version>2.3.4</version>
+            <version>2.5.0</version>
         </dependency>
 
 

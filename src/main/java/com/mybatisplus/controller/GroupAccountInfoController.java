@@ -261,7 +261,7 @@ private Get_LOVE love;
                 sender.sendGroupMsg(groupMsg, groupMsg.getMsgContent());
             }
             String q="[CAT:at,code="+groupMsg.getBotInfo().getBotCode()+"]";
-            if(text.equals(q)){
+            if(text.replace(" ","").equals(q)){
                 sender.sendGroupMsg(groupMsg,love.getQinghua());
             }
 

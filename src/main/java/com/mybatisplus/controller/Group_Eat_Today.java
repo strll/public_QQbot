@@ -6,6 +6,7 @@ import com.mybatisplus.entity.Today_Eat;
 import com.mybatisplus.service.IAdminService;
 import com.mybatisplus.service.TodayEatService;
 import com.mybatisplus.utils.MakeNeko;
+import io.ktor.client.features.ClientRequestException;
 import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.MessageContent;
@@ -86,7 +87,6 @@ public class Group_Eat_Today {
         Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
         group_and_sender.setSender(sender);
         group_and_sender.setGroup(msg);
-
         if (hashset.contains(group_and_sender)) {
             if (today_eat == null) {
                 this.today_eat = todayEatService.Send_Today_Eat_Message();
@@ -97,11 +97,18 @@ public class Group_Eat_Today {
             Today_Eat today_eat1 = today_eat.get((int) v1);
             String qq = today_eat1.getQq();
             String message = today_eat1.getMessage();
-            String s = "要不试试" + qq + "推荐的:\n" + message;
-            sender.sendGroupMsg(msg, s);
+            try{
+                String s = "要不试试" + qq + "推荐的:\n" + message;
+                sender.sendGroupMsg(msg, s);
+            }catch(ClientRequestException e) {
+                String[] split = message.split("\n");
+                sender.sendGroupMsg(msg, "存储图片已经失效 存储的key是: "+split[0]);
+            }
+
         } else{
             sender.sendGroupMsg(msg,"管理员未开启该功能");
         }
+        group_and_sender=null;
     }
     @OnGroup
     @Filter(value = "学习今天吃什么", trim = true, matchType = MatchType.CONTAINS)
