@@ -12,4 +12,6 @@ public int Delete_Today_Eat_Message(int id);
 public List<Today_Eat> Send_All_message();
 
     List<Today_Eat> selectMsg(String text);
+    public int  select_Id_By_Msg(String text);
+    public Today_Eat select_Todayeat_By_id(int id);
 }

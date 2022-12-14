@@ -1,12 +1,17 @@
 package com.mybatisplus.controller;
 
 import catcode.Neko;
+import com.mybatisplus.config.minio.config.service.FileStorageService;
+import com.mybatisplus.config.minio.config.service.impl.MinIOFileStorageService;
 import com.mybatisplus.entity.Group_And_Sender;
 import com.mybatisplus.entity.Today_Eat;
 import com.mybatisplus.service.IAdminService;
 import com.mybatisplus.service.TodayEatService;
 import com.mybatisplus.utils.MakeNeko;
+import com.mybatisplus.utils.Send_To_minio;
 import io.ktor.client.features.ClientRequestException;
+import io.ktor.http.Url;
+import lombok.extern.slf4j.Slf4j;
 import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.MessageContent;
@@ -23,16 +28,31 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.lang.math.RandomUtils.nextDouble;
-
+@Slf4j
 @Controller
 @Transactional
 public class Group_Eat_Today {
+
+    @Autowired
+    private Send_To_minio send_to_minio;
+
+    @Autowired
+    private MinIOFileStorageService fileStorageService;
 
     @Autowired
     private MessageContentBuilderFactory factory;
@@ -102,7 +122,15 @@ public class Group_Eat_Today {
                 sender.sendGroupMsg(msg, s);
             }catch(ClientRequestException e) {
                 String[] split = message.split("\n");
-                sender.sendGroupMsg(msg, "存储图片已经失效 存储的key是: "+split[0]);
+                sender.sendGroupMsg(msg, "存储图片已经失效 存储的key是: "+split[0]+" 该条失效信息正在被删除");
+                int i1 = todayEatService.select_Id_By_Msg(message);
+                int i = todayEatService.Delete_Today_Eat_Message(i1);
+                if (i !=0){
+                    sender.sendGroupMsg(msg, "失效信息已被删除");
+                }else{
+                    sender.sendGroupMsg(msg, "失效信息删除失败");
+                }
+
             }
 
         } else{
@@ -114,6 +142,8 @@ public class Group_Eat_Today {
     @Filter(value = "学习今天吃什么", trim = true, matchType = MatchType.CONTAINS)
     @Async
     public void studyeat(GroupMsg msg, Sender sender) throws IOException {
+
+
         Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
         group_and_sender.setSender(sender);
         group_and_sender.setGroup(msg);
@@ -124,6 +154,7 @@ public class Group_Eat_Today {
 
 
             if (hashset.contains(group_and_sender)) {
+                try{
                 Today_Eat eat = new Today_Eat();
                 String text = msg.getText().substring(7);
                 MessageContent msgContent = msg.getMsgContent();
@@ -131,8 +162,13 @@ public class Group_Eat_Today {
                 List<Neko> image = msgContent.getCats("image");
                 if (image.size() != 0) {
                     for (Neko neko : image) {
+
+
                         String url = neko.get("url");
-                        s = s + MakeNeko.MakePicture(url);
+
+                        String fileId= send_to_minio.Send_To_minio_Picture(url);
+
+                        s = s + MakeNeko.MakePicture(fileId);
                     }
                 }
                 String qq = msg.getAccountInfo().getAccountCode();
@@ -147,6 +183,12 @@ public class Group_Eat_Today {
                 } else {
                     sender.sendGroupMsg(msg, "存储 今天吃什么 失败");
                 }
+
+                } catch (Exception e) {
+                    log.info("文件上传失败 错误如下");
+                    e.printStackTrace();
+                }
+
             } else {
                 sender.sendGroupMsg(msg, "管理员未开启该功能");
             }
@@ -173,6 +215,9 @@ public class Group_Eat_Today {
         sender.sendGroupMsg(msg,"若要删除某个信息请输入: 删除今天吃什么 id");
         sender.sendGroupMsg(msg,messageContent);
     }
+// 猪脚饭
+// 猪脚饭
+//[CAT:image,file=http://gchat.qpic.cn/gchatpic_new/3041413893/2187532476-2935071242-0001F5663F72FD0CA3871DE006565E65/0?term=3]
 
 
     @OnGroup
@@ -183,15 +228,23 @@ public class Group_Eat_Today {
         group_and_sender.setSender(sender);
         group_and_sender.setGroup(msg);
         if (hashset.contains(group_and_sender)) {
-            String text = msg.getText().substring(9);
+            String text = msg.getText().substring(8);
             int i = 0;
             try {
+               Today_Eat today_Eat = todayEatService.select_Todayeat_By_id(Integer.parseInt(text));
+                    String message = today_Eat.getMessage();
+
+                String[] split = message.split("file=");
+                String substring = split[1].replace("]", "");
+                send_to_minio.Send_To_minio_Delete(substring);
                 i = todayEatService.Delete_Today_Eat_Message(Integer.parseInt(text));
+
             } catch (Exception e) {
                 sender.sendGroupMsg(msg, "出现错误 请输入 删除今天吃什么 要删除的内容的id");
             }
             if (i != 0) {
                 this.today_eat = null;
+                //刷新缓存
                 this.today_eat = todayEatService.Send_Today_Eat_Message();
                 sender.sendGroupMsg(msg, "删除成功");
             } else {
@@ -201,89 +254,7 @@ public class Group_Eat_Today {
             sender.sendGroupMsg(msg,"管理员未开启该功能");
         }
     }
-//    @OnGroup
-//    @Filter(value = "查看所有今天吃什么", trim = true, matchType = MatchType.CONTAINS)
-//    @Async
-//    public void seleectAlleat(GroupMsg msg, Sender sender) throws IOException {
-//        Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
-//        group_and_sender.setSender(sender);
-//        group_and_sender.setGroup(msg);
-//        if (hashset.contains(group_and_sender)) {
-//        MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
-//        if(this.today_eat==null){
-//            this.today_eat=todayEatService.Send_All_message();
-//        }
-//        List<Today_Eat> today_eats = this.today_eat;
-//        if(today_eat.size()>1) {
-//
-//            for (int i = 0; i < today_eat.size(); i++) {
-//                int j=0;
-//                builder.forwardMessage(forwardBuilder -> {
-//                    for (Today_Eat today_eat : today_eats) {
-//                        String s="该条信息的ID是: "+today_eat.getId()+"\n信息内容是:\n"+today_eat.getMessage()+"\n存储人是:\n"+today_eat.getQq();
-//                        forwardBuilder.add(msg.getBotInfo(), s);
-//                    }
-//                });
-//                j++;
-//                if(j>=20){
-//                    final MiraiMessageContent messageContent = builder.build();
-//                    sender.sendGroupMsg(msg,messageContent);
-//                    j=0;
-//                }
-//                if(today_eat.size()-j<20){
-//
-//                }
-//
-//            }
-//
-//        }
-//
-//
-//    }
-//        else{
-//            sender.sendGroupMsg(msg,"管理员未开启该功能");
-//        }
-//    }
-//
 
-
-//    @OnGroup
-//    @Filter(value = "查看今天吃什么", trim = true, matchType = MatchType.CONTAINS)
-//    @Async
-//    public void seleecteat(GroupMsg msg, Sender sender) throws IOException {
-//        Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
-//        group_and_sender.setSender(sender);
-//        group_and_sender.setGroup(msg);
-//        if (hashset.contains(group_and_sender)) {
-//            String text = msg.getText();
-//
-//            MiraiMessageContentBuilder builder = ((MiraiMessageContentBuilderFactory) factory).getMessageContentBuilder();
-//            if (this.today_eat == null) {
-//                this.today_eat = todayEatService.Send_All_message();
-//            }
-//            List<Today_Eat> today_eats = this.today_eat;
-//            List<Today_Eat> today_eats_re=new ArrayList<>();
-//
-//            for (Today_Eat todayEat : today_eats) {
-//
-//                if(todayEat.getMessage().contains(text)){
-//                    today_eats_re.add(todayEat);
-//                }
-//
-//            }
-//
-//            builder.forwardMessage(forwardBuilder -> {
-//                for (Today_Eat today_eat : today_eats_re) {
-//                    String s = "该条信息的ID是: " + today_eat.getId() + "\n信息内容是:\n" + today_eat.getMessage() + "\n存储人是:\n" + today_eat.getQq();
-//                    forwardBuilder.add(msg.getBotInfo(), s);
-//                }
-//            });
-//            final MiraiMessageContent messageContent = builder.build();
-//            sender.sendGroupMsg(msg, messageContent);
-//        } else {
-//            sender.sendGroupMsg(msg, "管理员未开启该功能");
-//        }
-//    }
 
 
 }

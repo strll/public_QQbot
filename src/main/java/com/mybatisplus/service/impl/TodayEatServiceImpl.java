@@ -49,4 +49,18 @@ public class TodayEatServiceImpl extends ServiceImpl<Today_EatMapper, Today_Eat>
         return today_eats;
     }
 
+    @Override
+    public int select_Id_By_Msg(String text) {
+        QueryWrapper<Today_Eat> today_eatQueryWrapper = new QueryWrapper<>();
+        today_eatQueryWrapper.eq("message",text);
+        Today_Eat today_eats = todayEatMapper.selectOne(today_eatQueryWrapper);
+        return today_eats.getId();
+    }
+    public Today_Eat select_Todayeat_By_id(int id){
+        QueryWrapper<Today_Eat> today_eatQueryWrapper = new QueryWrapper<>();
+        today_eatQueryWrapper.eq("id", id);
+        Today_Eat today_eats = todayEatMapper.selectOne(today_eatQueryWrapper);
+        return today_eats;
+    };
+
 }

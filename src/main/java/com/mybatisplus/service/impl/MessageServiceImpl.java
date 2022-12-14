@@ -5,6 +5,7 @@ import com.mybatisplus.entity.Message;
 import com.mybatisplus.mapper.MessageMapper;
 import com.mybatisplus.service.IMessageService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisplus.utils.Send_To_minio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -22,6 +23,8 @@ import java.util.List;
  */
 @Service
 public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> implements IMessageService {
+@Autowired
+    Send_To_minio send_to_minio;
 
     @Autowired
     private MessageMapper mapper;
@@ -51,7 +54,16 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Override
     @CacheEvict(value = "QQ", key="'DeleteMessage'",allEntries=true)
     public int DeleteMessage(String text) {
-       int i =mapper.deletemessage(text);
+        QueryWrapper<Message> messageQueryWrapper = new QueryWrapper<>();
+        messageQueryWrapper.eq("keymessage",text);
+        Message message = mapper.selectOne(messageQueryWrapper);
+        try {
+            send_to_minio.Send_To_minio_Delete(message.getUrl());
+        }catch (Exception e){
+       
+        }
+
+        int i =mapper.deletemessage(text);
         return i;
     }
 

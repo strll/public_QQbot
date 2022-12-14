@@ -4,6 +4,7 @@ import catcode.Neko;
 import com.mybatisplus.entity.Message;
 import com.mybatisplus.service.IAdminService;
 import com.mybatisplus.service.IMessageService;
+import com.mybatisplus.utils.Send_To_minio;
 import love.forte.simbot.annotation.*;
 import love.forte.simbot.api.message.MessageContent;
 import love.forte.simbot.api.message.containers.AccountInfo;
@@ -27,6 +28,8 @@ public class GroupStudySessionAreaEvent {
     private static final String AREA3_GROUP = "Area3124axfcv";
     private static final String AREA4_GROUP = "Area4asxq24";
 
+    @Autowired
+    private Send_To_minio send_to_minio;
 
     @Autowired
     private IMessageService service;
@@ -171,7 +174,8 @@ public class GroupStudySessionAreaEvent {
                 if (image.size() != 0) {
                     Neko neko = image.get(0);
                     url = neko.get("url");
-                    messageget.setUrl(url);
+                    String s = send_to_minio.Send_To_minio_Picture(url);
+                    messageget.setUrl(s);
                 }
                 if (url.equals("")) {
                     try {
