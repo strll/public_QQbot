@@ -228,15 +228,18 @@ public class Group_Eat_Today {
         group_and_sender.setSender(sender);
         group_and_sender.setGroup(msg);
         if (hashset.contains(group_and_sender)) {
-            String text = msg.getText().substring(8);
+            String text = msg.getText().substring(7);
             int i = 0;
             try {
                Today_Eat today_Eat = todayEatService.select_Todayeat_By_id(Integer.parseInt(text));
                     String message = today_Eat.getMessage();
 
-                String[] split = message.split("file=");
-                String substring = split[1].replace("]", "");
-                send_to_minio.Send_To_minio_Delete(substring);
+                    if(message.contains("file=")){
+                        String[] split = message.split("file=");
+                        String substring = split[1].replace("]", "");
+                        send_to_minio.Send_To_minio_Delete(substring);
+                    }
+
                 i = todayEatService.Delete_Today_Eat_Message(Integer.parseInt(text));
 
             } catch (Exception e) {
