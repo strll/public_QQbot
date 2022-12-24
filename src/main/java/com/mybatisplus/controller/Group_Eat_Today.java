@@ -28,10 +28,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -103,7 +100,7 @@ public class Group_Eat_Today {
     @OnGroup
     @Filter(value = "nana今天吃什么", trim = true, matchType = MatchType.CONTAINS)
     @Async
-    public void sendeat(GroupMsg msg, Sender sender) throws IOException {
+    public void sendeat(GroupMsg msg, Sender sender) throws IOException, EOFException {
         Group_And_Sender group_and_sender = new Group_And_Sender(msg, sender);
         group_and_sender.setSender(sender);
         group_and_sender.setGroup(msg);
@@ -118,8 +115,13 @@ public class Group_Eat_Today {
             String qq = today_eat1.getQq();
             String message = today_eat1.getMessage();
             try{
-                String s = "要不试试" + qq + "推荐的:\n" + message;
-                sender.sendGroupMsg(msg, s);
+                try{
+                    String s = "要不试试" + qq + "推荐的:\n" + message;
+                    sender.sendGroupMsg(msg, s);
+                }
+                catch(IllegalStateException e){
+                    sender.sendGroupMsg(msg, "图片发送失败可能是因为存储的图片太大了导致服务器无法发送 图片id是"+today_eat1.getId());
+                }
             }catch(ClientRequestException e) {
                 String[] split = message.split("\n");
                 sender.sendGroupMsg(msg, "存储图片已经失效 存储的key是: "+split[0]+" 该条失效信息正在被删除");
@@ -162,12 +164,7 @@ public class Group_Eat_Today {
                 List<Neko> image = msgContent.getCats("image");
                 if (image.size() != 0) {
                     for (Neko neko : image) {
-
-
-                        String url = neko.get("url");
-
-                        String fileId= send_to_minio.Send_To_minio_Picture(url);
-
+                        String fileId= send_to_minio.Send_To_minio_Picture_By_Neko(neko);
                         s = s + MakeNeko.MakePicture(fileId);
                     }
                 }
@@ -231,7 +228,7 @@ public class Group_Eat_Today {
             String text = msg.getText().substring(7);
             int i = 0;
             try {
-               Today_Eat today_Eat = todayEatService.select_Todayeat_By_id(Integer.parseInt(text));
+               Today_Eat today_Eat = todayEatService.select_Todayeat_By_id(Integer.parseInt(text.replaceAll(" ","")));
                     String message = today_Eat.getMessage();
 
                     if(message.contains("file=")){
@@ -239,10 +236,11 @@ public class Group_Eat_Today {
                         String substring = split[1].replace("]", "");
                         send_to_minio.Send_To_minio_Delete(substring);
                     }
-
-                i = todayEatService.Delete_Today_Eat_Message(Integer.parseInt(text));
+                int number=Integer.parseInt(text.replaceAll(" ",""));
+                i = todayEatService.Delete_Today_Eat_Message(number);
 
             } catch (Exception e) {
+
                 sender.sendGroupMsg(msg, "出现错误 请输入 删除今天吃什么 要删除的内容的id");
             }
             if (i != 0) {

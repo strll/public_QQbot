@@ -17,9 +17,11 @@ import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -61,14 +63,35 @@ public class MinIOFileStorageService implements FileStorageService {
      * @param inputStream 文件流
      * @return  文件全路径
      */
-    @Override
-    public String uploadImgFile(String prefix, String filename,InputStream inputStream) {
+//    @Override
+//    public String uploadImgFile(String prefix, String filename,InputStream inputStream) {
+//        String filePath = builderFilePath(prefix, filename);
+//        try {
+//            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+//                    .object(filePath)
+//                    .contentType("image/jpg")
+//                    .bucket(minIOConfigProperties.getBucket()).stream(inputStream,inputStream.available(),-1)
+//                    .build();
+//            minioClient.putObject(putObjectArgs);
+//            StringBuilder urlPath = new StringBuilder(minIOConfigProperties.getReadPath());
+//            urlPath.append(separator+minIOConfigProperties.getBucket());
+//            urlPath.append(separator);
+//            urlPath.append(filePath);
+//            return urlPath.toString();
+//        }catch (Exception ex){
+//            log.error("minio put file error.",ex);
+//            throw new RuntimeException("上传文件失败");
+//        }
+//    }
+
+    public String uploadImgFile(String prefix, String filename,InputStream inputStream,String type) {
         String filePath = builderFilePath(prefix, filename);
         try {
             PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                     .object(filePath)
-                    .contentType("image/jpg")
-                    .bucket(minIOConfigProperties.getBucket()).stream(inputStream,inputStream.available(),-1)
+                    .contentType("image/"+type.toLowerCase())
+                    .bucket(minIOConfigProperties.getBucket())
+                    .stream(inputStream,inputStream.available(),-1)
                     .build();
             minioClient.putObject(putObjectArgs);
             StringBuilder urlPath = new StringBuilder(minIOConfigProperties.getReadPath());

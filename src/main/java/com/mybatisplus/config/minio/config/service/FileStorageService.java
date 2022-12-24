@@ -15,7 +15,7 @@ public interface FileStorageService {
      * @param inputStream 文件流
      * @return  文件全路径
      */
-    public String uploadImgFile(String prefix, String filename,InputStream inputStream);
+    public String uploadImgFile(String prefix, String filename,InputStream inputStream,String type);
 
     /**
      *  上传html文件

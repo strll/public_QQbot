@@ -19,7 +19,6 @@
         <simbot.version>3.0.0.preview.8.1</simbot.version>
         <simbot-component-tcg.version>3.0.0.0.preview.3.1</simbot-component-tcg.version>
         <simbot-component-mirai.version>3.0.0.0.preview.2.2</simbot-component-mirai.version>
-
     </properties>
 
     <dependencies>
