@@ -63,26 +63,26 @@ public class MinIOFileStorageService implements FileStorageService {
      * @param inputStream 文件流
      * @return  文件全路径
      */
-//    @Override
-//    public String uploadImgFile(String prefix, String filename,InputStream inputStream) {
-//        String filePath = builderFilePath(prefix, filename);
-//        try {
-//            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
-//                    .object(filePath)
-//                    .contentType("image/jpg")
-//                    .bucket(minIOConfigProperties.getBucket()).stream(inputStream,inputStream.available(),-1)
-//                    .build();
-//            minioClient.putObject(putObjectArgs);
-//            StringBuilder urlPath = new StringBuilder(minIOConfigProperties.getReadPath());
-//            urlPath.append(separator+minIOConfigProperties.getBucket());
-//            urlPath.append(separator);
-//            urlPath.append(filePath);
-//            return urlPath.toString();
-//        }catch (Exception ex){
-//            log.error("minio put file error.",ex);
-//            throw new RuntimeException("上传文件失败");
-//        }
-//    }
+
+    public String uploadImgFile(String prefix, String filename,InputStream inputStream) {
+        String filePath = builderFilePath(prefix, filename);
+        try {
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .object(filePath)
+                    .contentType("image/jpg")
+                    .bucket(minIOConfigProperties.getBucket()).stream(inputStream,inputStream.available(),-1)
+                    .build();
+            minioClient.putObject(putObjectArgs);
+            StringBuilder urlPath = new StringBuilder(minIOConfigProperties.getReadPath());
+            urlPath.append(separator+minIOConfigProperties.getBucket());
+            urlPath.append(separator);
+            urlPath.append(filePath);
+            return urlPath.toString();
+        }catch (Exception ex){
+            log.error("minio put file error.",ex);
+            throw new RuntimeException("上传文件失败");
+        }
+    }
 
     public String uploadImgFile(String prefix, String filename,InputStream inputStream,String type) {
         String filePath = builderFilePath(prefix, filename);

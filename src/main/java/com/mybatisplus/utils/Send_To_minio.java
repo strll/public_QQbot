@@ -7,13 +7,12 @@ import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Random;
 import java.util.UUID;
 
 @Component
@@ -21,6 +20,41 @@ public class Send_To_minio {
     @Autowired
     private MinIOFileStorageService fileStorageService;
 //返回值是存储的url地址
+
+    public String Send_ToMinio_Picture_new(String url1) throws IOException {
+        URL url = new URL(url1);
+        Random rand = new Random();
+        int lowerBound = 1;
+        int upperBound = 2000000;
+        int randomInt = rand.nextInt(upperBound - lowerBound + 1) + lowerBound;
+
+
+        InputStream inputStream = url.openStream();
+        FileOutputStream outputStream = new FileOutputStream(randomInt+"1.jpg");
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, length);
+        }
+        inputStream.close();
+        outputStream.close();
+
+        File file = new File(randomInt+"1.jpg");
+        InputStream inputStream1 = new FileInputStream(file);
+
+
+        String replace = UUID.randomUUID().toString().replace("-", "");
+        String originalFilename = "123";
+      //  String postfix = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String fileId = fileStorageService.uploadImgFile("", replace,  inputStream1 );
+        System.out.println(fileId);
+        file.delete();
+        inputStream1.close();
+        return  fileId;
+
+
+    }
+
 
     @Deprecated
     public String Send_To_minio_Picture(String url ){
@@ -54,6 +88,42 @@ public class Send_To_minio {
 
         String fileId = null;
         fileId = fileStorageService.uploadImgFile("", replace, is,"jpg");
+        return fileId;
+    }
+
+
+
+    public String Send_To_minio_Picture(String url ,String type){
+
+
+        URL url1 = null;
+        try {
+            url1 = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+
+        URLConnection con = null;
+        try {
+            con = url1.openConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        InputStream is=null;
+
+        try {
+            is = con.getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        HttpURLConnection conn = null;
+        String replace = UUID.randomUUID().toString().replace("-", "")+"."+type.toLowerCase();
+
+
+        String fileId = null;
+        fileId = fileStorageService.uploadImgFile("", replace, is,type.toLowerCase());
         return fileId;
     }
 

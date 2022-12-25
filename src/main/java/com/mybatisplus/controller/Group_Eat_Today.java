@@ -164,7 +164,8 @@ public class Group_Eat_Today {
                 List<Neko> image = msgContent.getCats("image");
                 if (image.size() != 0) {
                     for (Neko neko : image) {
-                        String fileId= send_to_minio.Send_To_minio_Picture_By_Neko(neko);
+                        String url = neko.get("url");
+                        String fileId= send_to_minio.Send_ToMinio_Picture_new(url);
                         s = s + MakeNeko.MakePicture(fileId);
                     }
                 }

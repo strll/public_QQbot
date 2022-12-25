@@ -17,6 +17,7 @@ import love.forte.simbot.listener.SessionCallback;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -152,7 +153,7 @@ public class GroupStudySessionAreaEvent {
      */
     @OnGroup
     @OnlySession(group = AREA2_GROUP)
-    public void listenArea2(GroupMsg msg, ListenerContext context){
+    public void listenArea2(GroupMsg msg, ListenerContext context) throws IOException {
         // 得到session上下文。
         ContinuousSessionScopeContext session = (ContinuousSessionScopeContext) context.getContext(ListenerContext.Scope.CONTINUOUS_SESSION);
         assert session != null;
@@ -174,8 +175,11 @@ public class GroupStudySessionAreaEvent {
                 if (image.size() != 0) {
                     Neko neko = image.get(0);
                     url = neko.get("url");
-                    String s = send_to_minio.Send_To_minio_Picture(url);
+                    String s = send_to_minio.Send_ToMinio_Picture_new(url);
+                    String[] split = text.split("url");
+                    text= split[0]+"url="+s+"]";
                     messageget.setUrl(s);
+
                 }
                 if (url.equals("")) {
                     try {
