@@ -28,9 +28,9 @@ public class Send_To_minio {
         int upperBound = 2000000;
         int randomInt = rand.nextInt(upperBound - lowerBound + 1) + lowerBound;
 
-
+ String name =randomInt+"1.jpg";
         InputStream inputStream = url.openStream();
-        FileOutputStream outputStream = new FileOutputStream(randomInt+"1.jpg");
+        FileOutputStream outputStream = new FileOutputStream(name);
         byte[] buffer = new byte[1024];
         int length;
         while ((length = inputStream.read(buffer)) != -1) {
@@ -39,17 +39,17 @@ public class Send_To_minio {
         inputStream.close();
         outputStream.close();
 
-        File file = new File(randomInt+"1.jpg");
+        File file = new File(name);
         InputStream inputStream1 = new FileInputStream(file);
 
 
         String replace = UUID.randomUUID().toString().replace("-", "");
-        String originalFilename = "123";
       //  String postfix = originalFilename.substring(originalFilename.lastIndexOf("."));
         String fileId = fileStorageService.uploadImgFile("", replace,  inputStream1 );
         System.out.println(fileId);
-        file.delete();
+
         inputStream1.close();
+        file.delete();
         return  fileId;
 
 
