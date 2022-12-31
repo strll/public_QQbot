@@ -64,7 +64,12 @@ public class GroupSong {
             sender.SENDER.sendGroupMsg(msg, "请输入你要听的歌曲的名字");
             sessionContext.waiting(AREA2_GROUP, key, text2 -> {
                 String SongName = (String) text2;
-                String muic = getMuic.getMuic(SongName);
+                String muic = null;
+                try {
+                    muic = getMuic.getMuic(SongName);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 sender.SENDER.sendGroupMsg(msg,muic);
             });
 

@@ -58,8 +58,6 @@ public class Send_To_minio {
 
     @Deprecated
     public String Send_To_minio_Picture(String url ){
-
-
         URL url1 = null;
         try {
             url1 = new URL(url);
