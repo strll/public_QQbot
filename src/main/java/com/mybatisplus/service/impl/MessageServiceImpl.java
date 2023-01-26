@@ -29,7 +29,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Autowired
     private MessageMapper mapper;
     @Override
-    @Cacheable(key="#key",value="QQ")
+    //@Cacheable(key="#key",value="QQ")
     public List<Message> Get_Message_by_key(Message key) {
         String k1=key.getKeymessage();
         QueryWrapper<Message> messageQueryWrapper = new QueryWrapper<>();
@@ -38,21 +38,21 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         return messages;
     }
     @Override
-    @CacheEvict(value = "QQ", key="'Study'",allEntries=true)
+    //@CacheEvict(value = "QQ", key="'Study'",allEntries=true)
     public int Study(Message message) {
         int i = mapper.InsertStudy(message);
         return i;
     }
 
     @Override
-    @CacheEvict(value = "QQ", key="'InsertMessage'",allEntries=true)
+  //  @CacheEvict(value = "QQ", key="'InsertMessage'",allEntries=true)
     public int InsertMessage(Message message) {
         int insert = mapper.insert(message);
         return insert;
     }
 
     @Override
-    @CacheEvict(value = "QQ", key="'DeleteMessage'",allEntries=true)
+  //  @CacheEvict(value = "QQ", key="'DeleteMessage'",allEntries=true)
     public int DeleteMessage(String text) {
         QueryWrapper<Message> messageQueryWrapper = new QueryWrapper<>();
         messageQueryWrapper.eq("keymessage",text);

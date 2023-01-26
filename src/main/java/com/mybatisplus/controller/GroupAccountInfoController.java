@@ -14,7 +14,9 @@ import com.mybatisplus.service.IMessageService;
 
 import com.mybatisplus.service.impl.MessageServiceImpl;
 import com.mybatisplus.utils.Get_LOVE;
+import com.mybatisplus.utils.Get_Url_in_Text_and_get_Picture_from_Url;
 import com.mybatisplus.utils.Random_say;
+import lombok.extern.log4j.Log4j2;
 import love.forte.simbot.annotation.*;
 import love.forte.simbot.api.message.MessageContent;
 import love.forte.simbot.api.message.MessageContentBuilderFactory;
@@ -89,6 +91,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *         System.out.println(groupInfo.getGroupName());
  *     }
  */
+@Log4j2
 @Controller
 public class GroupAccountInfoController {
     @Autowired
@@ -105,6 +108,8 @@ private IMessageService service;
     @Autowired
     private Random_say random_say;
 
+    @Autowired
+private Get_Url_in_Text_and_get_Picture_from_Url get_url_in_text_and_get_picture_from_url;
     @Async
     @OnGroup
     @Filter(value="nana帮助",trim=true,matchType = MatchType.CONTAINS)
@@ -254,6 +259,11 @@ private Get_LOVE love;
         group_and_sender.setGroup(groupMsg);
 
         if (send_flag&&hashset.contains(group_and_sender)) {
+            String picture = get_url_in_text_and_get_picture_from_url.getPicture(groupMsg.getText());
+            if(picture!=null){
+                sender.sendGroupMsg(groupMsg,picture);
+            }
+
             String valuemessage = "";
             String text = groupMsg.getMsg();//获取发生信息
             if( (int)Math.round(Math.random()*10000)<7 ){
@@ -264,6 +274,8 @@ private Get_LOVE love;
             if(text.replace(" ","").equals(q)){
                 sender.sendGroupMsg(groupMsg,love.getQinghua());
             }
+
+
 
             if (!text.equals("") && text != null) {
                 Message message = new Message();
@@ -298,8 +310,6 @@ private Get_LOVE love;
                 }
             }
 
-
-
         try{
             //查询b站信息
             List<Neko> cats = groupMsg.getMsgContent().getCats();
@@ -327,6 +337,7 @@ private Get_LOVE love;
                 }
             }
         }catch (Exception e){
+            log.info(e.getLocalizedMessage());
 
         }
         MessageContent messageContent=groupMsg.getMsgContent();

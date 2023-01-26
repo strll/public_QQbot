@@ -29,4 +29,12 @@ hs_err_pid*
 
 
 
+/target/
+/src/main/resources/simbot-bots
+/src/main/resources/application.yml
+/cache
+/device.json
+/.gitignore
+/.idea
+/servers.json
 

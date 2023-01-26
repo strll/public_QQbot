@@ -24,6 +24,8 @@ public class GetMuic {
     String musicKey;
 
 
+
+
     public String getMuic(String SongName) throws IOException {
       //  String URL = "https://music.cyrilstudio.top/search?keywords="+SongName;
 // 使用的是https://admin.alapi.cn/account/center 这个网站的接口
