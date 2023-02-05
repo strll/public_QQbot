@@ -45,10 +45,12 @@
     * [数据库相关配置](https://blog.csdn.net/weixin_45750972/article/details/119608168)
     * [minio相关配置](https://www.jianshu.com/p/403eaf7d401c)
     * [simbot相关配置](https://www.yuque.com/simpler-robot/simpler-robot-doc/fk6o3e)
+    * [redis相关配置](https://blog.csdn.net/qq_47431361/article/details/123240363?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522167558647916800222889736%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fblog.%2522%257D&request_id=167558647916800222889736&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v31_ecpm-1-123240363-null-null.blog_rank_default&utm_term=redis&spm=1018.2226.3001.4450)
 * 在`src/main/resources/`目录下创建`simbot-bots`目录，存放simbot账号配置，参考：simbot文档 [账号配置部分](https://www.yuque.com/simpler-robot/simpler-robot-doc/fk6o3e)
   
 ## 可能遇到的问题
 * 登录失败、滑块验证、当前账号或网络异常  参考：simbot文档 [常见问题](https://www.yuque.com/simpler-robot/simpler-robot-doc/ul3m12)
+* 如果显示版本过低的话可尝试使用Simbot v3进行登录之后拷贝缓存进行替换
 
 ## 相关链接
 本项目基于Simbot，请善用其官方文档  
