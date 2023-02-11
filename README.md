@@ -1,3 +1,4 @@
+simbot v2版本停止更新 以后会更新simbotv3版本
 # NANA robot
 基于Simbot v2、SpringBoot的QQ机器人程序
 
